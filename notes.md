@@ -36,8 +36,8 @@ What are some defining characteristics of programming as a means of expression?
 One characteristic is that these utterances are executable.
 But what really makes them executable?
 What distinguishes them from other forms?
-I want to suggest that on ambiguity is one important characteristic.
-Now, if I'm ambiguity is so important, we would probably like to experience that value elsewhere.
+I want to suggest that unambiguity is one important characteristic.
+Now, if unambiguity is so important, we would probably like to experience that value elsewhere.
 What about the goals that we are trying to accomplish by our programs?
 What about the ends to which our program are the means?
 I have the impression that too many or perhaps most programmers, programming is about making machines do things.
@@ -57,6 +57,8 @@ Talk about popularity and dilution.
 How can I broach this subject in a way that is clear and preferably not too offensive for people to listen to?
 
 ## Talk notes
+
+### Math vs programming
 
 How do math and programming compare?
 Some thoughts:
@@ -117,11 +119,15 @@ Among the precise and adequate candidates, we want to optimize for the following
 *   Simple --- for practical reasoning and accurate intuition
 *   Compelling --- ...
 
-Talk design thoughts:
+## Quotes
+
+"The purpose of abstraction is not to be vague, but to create a new semantic level in which one can be absolutely precise." - Edsger Dijkstra
+
+## Talk design thoughts
 
 *   Start with at least one simple example to ground the upcoming abstract explanation.
 
-Examples:
+### Examples
 
 *   FRP: dynamic values / variation over time
 *   Image manipulation: variation over space
@@ -129,3 +135,4 @@ Examples:
 *   [Memo tries][*Composing memo tries*]
 *   [Matrices][*Reimagining matrices*]
 *   [Fold fusion][*Another lovely example of type class morphisms*]
+

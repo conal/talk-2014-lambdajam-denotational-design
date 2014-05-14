@@ -1,0 +1,39 @@
+%% Misc lhs2TeX directives
+
+%format Unit = " \mathbf{1} "
+%% %format Unit = " \mathbbm{1} "
+%format :* = " \times "
+%format :+ = " + "
+
+%format :*: = " \times "
+%format :+: = " + "
+
+%format `mappend` = " \mathbin{\oplus} "
+%format mempty = " \emptyset "
+
+%format <$> = "\mathbin{<\!\!\!\$\!\!\!>}"
+
+% %format :. = "\, {\mathbin{:\!\!\circ}}\, "
+%format :. = "\circ"
+
+%% optional double-dollar spelling, to avoid $ confusing emacs latex-mode.
+%format <$$> = <$>
+
+
+% Got from Andres L:
+\newcommand{\calculationcomments}{%
+  \let\onelinecomment=\onelinecommentchars
+  \def\commentbegin{\quad\{ }%
+  \def\commentend{\}}%
+}
+\calculationcomments
+
+\newcommand{\mplus}{\mathbin{+}}
+% \newcommand{\mplus}{\mathbin{\hat{+}}}
+
+%format ~> = "\leadsto"
+
+%% hack: add missing space, e.g., before "{" in data type decl
+%format SPACE = "\ {}"
+
+% \renewcommand{\onelinecomment}{\it}
