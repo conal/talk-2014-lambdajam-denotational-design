@@ -157,7 +157,7 @@ Represent:
 Interpret:
 
 > meaning :: Num s => Scale s -> (s -> s)
-> meaning (Scale s) = (s @* NO)
+> meaning (Scale s) = \ x -> s @* x
 
 \pause
 
@@ -186,7 +186,8 @@ Specification:
 > meaning idL       == id
 > meaning (g @. f)  == meaning g . meaning f
 
-The game: calculate implementation from specification.
+%% The game: calculate implementation from specification.
+Calculation:
 
 \setlength{\fboxsep}{-1ex}
 
@@ -197,13 +198,15 @@ The game: calculate implementation from specification.
 > BACK ==  \ x -> x
 > BACK ==  \ x -> 1 @* x
 > BACK ==  meaning (Scale 1)
+> SPACE
 
 \end{minipage}}
 \fbox{\begin{minipage}[c]{0.55\textwidth}
 
 >          meaning (Scale s)  .  meaning (Scale s')
-> BACK ==  (s @* NO) . (s' @* NO)
-> BACK ==  ((s @* s') @* NO)
+> BACK ==  (\ x -> s @* x) . (\ x' -> s' @* x')
+> BACK ==  \ x' -> s @* (s' @* x')
+> BACK ==  \ x' -> ((s @* s') @* x')
 > BACK ==  meaning (Scale (s @* s'))
 
 \end{minipage}}
