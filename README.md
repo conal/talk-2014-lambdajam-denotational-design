@@ -2,7 +2,8 @@ Talk: *Denotational Design: from programs to meanings*
 
 Given at [BayHac 2014](http://www.haskell.org/haskellwiki/BayHac2014).
 
-Abstract:
+## Abstract
+
  <blockquote>
 
 In this talk, I'll share a methodology that I have applied many times over the last 20+ years when designing high-level libraries for functional programming.
