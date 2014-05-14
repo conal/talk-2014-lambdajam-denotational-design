@@ -4,8 +4,6 @@ Given at [BayHac 2014](http://www.haskell.org/haskellwiki/BayHac2014).
 
 ## Abstract
 
- <blockquote>
-
 In this talk, I'll share a methodology that I have applied many times over the last 20+ years when designing high-level libraries for functional programming.
 Functional libraries are usually organized around small collections of domain-specific data types together with operations for forming and combining values of those types.
 When done well, the result has the elegance and precision of algebra on numbers while capturing much larger and more interesting ideas.
@@ -28,5 +26,3 @@ The talk and workshop will present the principles and practice of Denotational D
 I will use Haskell, where purity and type classes are especially useful to guide the process.
 Once understood, the techniques are transferable to other functional languages as well.
 If you'd like a sneak peak, see the paper [*Denotational design with type class morphisms*](http://conal.net/papers/type-class-morphisms/) and some [related blog articles](http://conal.net/blog/tag/type-class-morphism).
-
- </blockquote>
