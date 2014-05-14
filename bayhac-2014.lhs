@@ -115,4 +115,85 @@ In Haskell,
 
 }
 
+\framet{Example -- 1D linear functions}{
+
+\vspace{2ex}
+
+\emph{Assignment:}
+\begin{itemize}
+\item Represent 1D linear functions
+\item Implement identity and composition
+\end{itemize}
+
+\pause
+
+\textbf{Goals:}
+\begin{itemize}
+  \item Precise, simple, and compelling specification
+  \item Based on familiar algebraic abstraction (with laws)
+  \item Principled construction of correct implementation
+\end{itemize}
+
+\pause
+
+\textbf{Plan:}
+\begin{itemize}
+  \item Represent
+  \item Interpret
+  \item Specify
+  \item Calculate
+\end{itemize}
+
+}
+
+\framet{1D linear function}{
+
+Represent:
+
+> newtype Scale s = Scale s
+
+\pause
+
+Interpret:
+
+> meaning :: Num s => Scale s -> (s -> s)
+> meaning (Scale s) = (s *)
+
+\pause
+
+Specify: % define |idL| and |compL| such that
+
+> meaning idL == id
+> meaning (g `compL` f)  == meaning g . meaning f
+
+}
+
+\framet{Calculate an implementation}{
+
+Define
+
+> id     :: Num s => Scale s
+> compL  :: Num s => Scale s -> Scale s -> Scale s
+
+such that
+
+> meaning idL            == id
+> meaning (g `compL` f)  == meaning g . meaning f
+
+}
+
 \end{document}
+
+Supporting abstraction for identity & composition?
+
+\pause
+
+> data Lin :: * -> * -> * SPACE where
+>   Scale :: Num s => s -> Lin s s
+
+\pause
+\textbf{Key ideas:}
+\begin{itemize}
+  \item \emph{Interpret} data type as math type with the required operations.
+  \item \emph{Calculate} a correct implementation.
+\end{itemize}
