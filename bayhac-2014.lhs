@@ -157,28 +157,72 @@ Represent:
 Interpret:
 
 > meaning :: Num s => Scale s -> (s -> s)
-> meaning (Scale s) = (s *)
+> meaning (Scale s) = (s @* NO)
 
 \pause
 
-Specify: % define |idL| and |compL| such that
+Specify:
 
-> meaning idL == id
-> meaning (g `compL` f)  == meaning g . meaning f
+> meaning idL       == id
+> meaning (g @. f)  == meaning g . meaning f
 
 }
 
+\nc\bboxed[1]{\boxed{\rule[-0.9ex]{0pt}{2.8ex}#1}}
+
 \framet{Calculate an implementation}{
 
+\hidden{
 Define
 
-> id     :: Num s => Scale s
-> compL  :: Num s => Scale s -> Scale s -> Scale s
+> id    :: Scale s
+> (@.)  :: Scale s -> Scale s -> Scale s
 
 such that
+}
 
-> meaning idL            == id
-> meaning (g `compL` f)  == meaning g . meaning f
+Specification:
+
+> meaning idL       == id
+> meaning (g @. f)  == meaning g . meaning f
+
+The game: calculate implementation from specification.
+
+\setlength{\fboxsep}{-1ex}
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.40\textwidth}
+
+>          id
+> BACK ==  \ x -> x
+> BACK ==  \ x -> 1 @* x
+> BACK ==  meaning (Scale 1)
+
+\end{minipage}}
+\fbox{\begin{minipage}[c]{0.55\textwidth}
+
+>          meaning (Scale s)  .  meaning (Scale s')
+> BACK ==  (s @* NO) . (s' @* NO)
+> BACK ==  ((s @* s') @* NO)
+> BACK ==  meaning (Scale (s @* s'))
+
+\end{minipage}}
+\end{center}
+
+Sufficient:
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.40\textwidth}
+
+> BACK idL = Scale 1
+
+\end{minipage}}
+\fbox{\begin{minipage}[c]{0.55\textwidth}
+
+> BACK Scale s @. Scale s' = Scale (s @* s')
+
+\end{minipage}}
+\end{center}
 
 }
 
