@@ -30,6 +30,8 @@
 
 \usepackage{wasysym}
 
+\usepackage{setspace}
+
 \useinnertheme[shadow]{rounded}
 % \useoutertheme{default}
 \useoutertheme{shadow}
@@ -64,30 +66,42 @@
 
 % \setbeameroption{show notes} % un-comment to see the notes
 
+\setstretch{1.2}
+
 \begin{document}
+
+% \nc\qq[2]{\emph{#1} - #2}
+\nc\qq[2]{
+\begin{center}\begin{minipage}[t]{0.7\textwidth}\begin{center}
+\emph{#1}
+\end{center}
+\begin{flushright}
+\vspace{-1.2ex}
+- #2\hspace{2ex}~
+\end{flushright}
+\end{minipage}\end{center}
+}
+\nc\pqq{\pause\qq}
 
 \frame{\titlepage}
 
-%% \title{Denotational design}
-%% \subtitle{From programs to meanings}
+\framet{Not even wrong}{\parskip 2ex
+
+Conventional programming is precise only about how, not what.
+
+\pqq{It is not only not right, it is not even wrong.}{Wolfgang Pauli}
+
+\pqq{Everything is vague to a degree you do not realize till you have tried to make it precise.}{Bertrand Russell}
+
+\pqq{What we wish, that we readily believe.}{Demosthenes}
+
+}
 
 \framet{Abstraction}{
-\vspace{0.6in}
-\begin{center}
-\begin{minipage}[t]{0.7\textwidth}
-\begin{center}
-{ \it
-The purpose of abstraction is not to be vague,\\
+\large \setstretch{1.5}
+\qq{The purpose of abstraction is not to be vague,\\
 but to create a new semantic level\\
-in which one can be absolutely precise.
-}
-\end{center}
-\vspace{3ex}
-\begin{flushright}
-- Edsger Dijkstra
-\end{flushright}
-\end{minipage}
-\end{center}
+in which one can be absolutely precise.}{Edsger Dijkstra}
 }
 
 \framet{Library design}{ \parskip 3ex
@@ -107,6 +121,7 @@ Where have such things been developed?
 
 In Haskell,
 \pause
+\vspace{-2ex}
 \begin{itemize}
   \item Standard type classes
   \item Laws
@@ -150,13 +165,13 @@ In Haskell,
 
 Represent:
 
-> newtype Scale s = Scale s
+> newtype Lin1 s = Scale s
 
 \pause
 
 Interpret:
 
-> meaning :: Num s => Scale s -> (s -> s)
+> meaning :: Num s => Lin1 s -> (s -> s)
 > meaning (Scale s) = \ x -> s @* x
 
 \pause
@@ -175,8 +190,8 @@ Specify:
 \hidden{
 Define
 
-> id    :: Scale s
-> (@.)  :: Scale s -> Scale s -> Scale s
+> id    :: Lin1 s
+> (@.)  :: Lin1 s -> Lin1 s -> Lin1 s
 
 such that
 }
@@ -212,7 +227,7 @@ Calculation:
 \end{minipage}}
 \end{center}
 
-Sufficient:
+Sufficient definitions:
 
 \begin{center}
 \fbox{\begin{minipage}[c]{0.40\textwidth}
@@ -229,13 +244,22 @@ Sufficient:
 
 }
 
+\framet{Algebraic abstraction}{
+
+\begin{itemize}
+  \item Replace ad hoc vocabulary with a standard one.
+  \item Verify laws
+\end{itemize}
+
+}
+
 \end{document}
 
 Supporting abstraction for identity & composition?
 
 \pause
 
-> data Lin :: * -> * -> * SPACE where
+> data Lin1 :: * -> * -> * SPACE where
 >   Scale :: Num s => s -> Lin s s
 
 \pause
