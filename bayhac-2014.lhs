@@ -285,11 +285,21 @@ In general,
 \end{itemize}
 
 What standard abstraction to use for |Lin|?
-\pause
+}
+
+\framet{Category}{
+
+Interface:
 
 > class Category k where
 >   id   :: k a a
 >   (.)  :: k b c -> k a b -> k a c
+
+Laws:
+
+> id . f       == f
+> g . id       == id
+> (h . g) . f  == h . (g . f)
 
 }
 
@@ -331,10 +341,11 @@ Correct-by-construction implementation:
 
 where equality is \emph{semantic}.
 \pause
-Proofs:
+
+Proofs follow from semantic homomorphism:
 
 \begin{center}
-\fbox{\begin{minipage}[c]{0.40\textwidth}
+\fbox{\begin{minipage}[c]{0.3\textwidth}
 
 >     meaning (id . f)
 > ==  meaning id . meaning f
@@ -342,7 +353,15 @@ Proofs:
 > ==  meaning f
 
 \end{minipage}}
-\fbox{\begin{minipage}[c]{0.55\textwidth}
+\fbox{\begin{minipage}[c]{0.3\textwidth}
+
+>     meaning (g . id)
+> ==  meaning g . meaning id
+> ==  meaning g . id
+> ==  meaning g
+
+\end{minipage}}
+\fbox{\begin{minipage}[c]{0.39\textwidth}
 
 >     meaning ((h . g) . f)
 > ==  (meaning h . meaning g) . meaning f
@@ -352,7 +371,7 @@ Proofs:
 \end{minipage}}
 \end{center}
 
-This pattern works for other classes as well.
+Works for other classes as well.
 
 }
 
