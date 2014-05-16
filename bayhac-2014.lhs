@@ -58,7 +58,7 @@
 \setlength{\itemsep}{2ex}
 \setlength{\parskip}{1ex}
 
-\setlength{\blanklineskip}{1.5ex}
+% \setlength{\blanklineskip}{1.5ex}
 
 \nc\pitem{\pause \item}
 
@@ -179,26 +179,33 @@ Design methodology for typed, purely functional programming.
 
 }
 
-\framet{Warm-up: 1D linear transformations}{
+\setlength{\fboxsep}{-1.7ex}
 
-Represent:
+\framet{Representation and meaning}{
+
+Representation (data type):
 \pause
 
-> newtype Lin1 s = Scale s
+> data Lin :: * -> * -> * SPACE where
+>   Scale :: Num s => Lin s s   -- ...
 
-Interpret:
+Interpretation (model):
 \pause
 
-> meaning :: Num s => Lin1 s -> (s -> s)
+> type a :-* b  -- Linear subset of |a -> b|
+
+> meaning :: Lin a b -> (a :-* b)
 > meaning (Scale s) = \ x -> s @* x
 
-Specify:
+Specification (semantics):
 \pause
 
 > meaning idL       == id
 > meaning (g @. f)  == meaning g . meaning f
 
 }
+
+%% TODO: signatures for idL and (@.), using bboxed
 
 \nc\bboxed[1]{\boxed{\rule[-0.9ex]{0pt}{2.8ex}#1}}
 
@@ -207,22 +214,29 @@ Specify:
 \hidden{
 Define
 
-> id    :: Lin1 s
-> (@.)  :: Lin1 s -> Lin1 s -> Lin1 s
+> id    :: Lin a b
+> (@.)  :: Lin b c -> Lin a b -> Lin a c
 
 such that
 }
 
-Specification:
+\vspace{-1ex}
+Specification:\vspace{-1ex}
+\begin{center}
+\fbox{\begin{minipage}[c]{0.40\textwidth}
 
-> meaning idL       == id
-> meaning (g @. f)  == meaning g . meaning f
+> meaning idL == id
+
+\end{minipage}}
+\fbox{\begin{minipage}[c]{0.55\textwidth}
+
+> meaning (g @. f) == meaning g . meaning f
+
+\end{minipage}}
+\end{center}
 
 %% The game: calculate implementation from specification.
-Calculation:
-
-\setlength{\fboxsep}{-1ex}
-
+Calculation:\vspace{-1ex}
 \begin{center}
 \fbox{\begin{minipage}[c]{0.40\textwidth}
 
@@ -244,8 +258,7 @@ Calculation:
 \end{minipage}}
 \end{center}
 
-Sufficient definitions:
-
+Sufficient definitions:\vspace{-1ex}
 \begin{center}
 \fbox{\begin{minipage}[c]{0.40\textwidth}
 
@@ -263,10 +276,83 @@ Sufficient definitions:
 
 \framet{Algebraic abstraction}{
 
+In general,
+
 \begin{itemize}
-  \item Replace ad hoc vocabulary with a standard one.
-  \item Verify laws
+  \item Replace ad hoc vocabulary with a standard abstraction.
+  \item Recast semantics as homomorphism.
+  \item Note that laws hold.
 \end{itemize}
+
+What standard abstraction to use for |Lin|?
+\pause
+
+> class Category k where
+>   id   :: k a a
+>   (.)  :: k b c -> k a b -> k a c
+
+}
+
+\framet{Linear transformation category}{
+
+Linear map semantics:
+
+> meaning :: Lin a b -> (a :-* b)
+> meaning (Scale s) = \ x -> s @* x
+
+Specification as homomorphism:
+
+> meaning id       == id
+> meaning (g . f)  == meaning g . meaning f
+
+Correct-by-construction implementation:
+
+> instance Category Lin where
+>   id = Scale 1
+>   Scale s . Scale s' = Scale (s @* s')
+
+}
+
+\framet{Laws for free}{
+
+%% Semantic homomorphisms guarantee class laws. For `Category`,
+
+\begin{minipage}[c]{0.3\textwidth}
+|Category| laws:
+\end{minipage}
+\fbox{\begin{minipage}[c]{0.5\textwidth}
+
+> id . f       == f
+> g . id       == id
+> (h . g) . f  == h . (g . f)
+
+\end{minipage}}
+\vspace{1ex}
+
+where equality is \emph{semantic}.
+\pause
+Proofs:
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.40\textwidth}
+
+>     meaning (id . f)
+> ==  meaning id . meaning f
+> ==  id . meaning f
+> ==  meaning f
+
+\end{minipage}}
+\fbox{\begin{minipage}[c]{0.55\textwidth}
+
+>     meaning ((h . g) . f)
+> ==  (meaning h . meaning g) . meaning f
+> ==  meaning h . (meaning g . meaning f)
+> ==  meaning (h . (g . f))
+
+\end{minipage}}
+\end{center}
+
+This pattern works for other classes as well.
 
 }
 
@@ -276,7 +362,7 @@ Supporting abstraction for identity & composition?
 
 \pause
 
-> data Lin1 :: * -> * -> * SPACE where
+> data Lin :: * -> * -> * SPACE where
 >   Scale :: Num s => s -> Lin s s
 
 \pause
