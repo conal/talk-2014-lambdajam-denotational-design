@@ -29,8 +29,8 @@
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
 \usepackage{wasysym}
-
 \usepackage{setspace}
+\usepackage{enumerate}
 
 \useinnertheme[shadow]{rounded}
 % \useoutertheme{default}
@@ -70,8 +70,7 @@
 
 \begin{document}
 
-% \nc\qq[2]{\emph{#1} - #2}
-\nc\qq[2]{
+\rnc\quote[2]{
 \begin{center}\begin{minipage}[t]{0.7\textwidth}\begin{center}
 \emph{#1}
 \end{center}
@@ -81,7 +80,7 @@
 \end{flushright}
 \end{minipage}\end{center}
 }
-\nc\pqq{\pause\qq}
+\nc\pquote{\pause\quote}
 
 \frame{\titlepage}
 
@@ -89,17 +88,17 @@
 
 Conventional programming is precise only about how, not what.
 
-\pqq{It is not only not right, it is not even wrong.}{Wolfgang Pauli}
+\pquote{It is not only not right, it is not even wrong.}{Wolfgang Pauli}
 
-\pqq{Everything is vague to a degree you do not realize till you have tried to make it precise.}{Bertrand Russell}
+\pquote{Everything is vague to a degree you do not realize till you have tried to make it precise.}{Bertrand Russell}
 
-\pqq{What we wish, that we readily believe.}{Demosthenes}
+\pquote{What we wish, that we readily believe.}{Demosthenes}
 
 }
 
 \framet{Abstraction}{
 \large \setstretch{1.5}
-\qq{The purpose of abstraction is not to be vague,\\
+\quote{The purpose of abstraction is not to be vague,\\
 but to create a new semantic level\\
 in which one can be absolutely precise.}{Edsger Dijkstra}
 }
@@ -130,28 +129,47 @@ In Haskell,
 
 }
 
-\framet{Example -- 1D linear functions}{
+\framet{Denotative programming}{\parskip 2ex
 
-\vspace{2ex}
+Peter Landin recommended ``denotative'' to replace fuzzy terms ``functional'' and ``declarative''.
+
+Properties:
+\begin{itemize}
+  \item Nested expression structure.
+  \item Each expression \emph{denotes} something,
+  \item depending only on subexpression denotations.
+\end{itemize}
+
+``\ldots gives us a test for whether the notation is genuinely functional or merely masquerading.''
+(\href{http://www.scribd.com/doc/12878059/The-Next-700-Programming-Languages}{\emph{The
+Next 700 Programming Languages}})
+
+}
+
+\framet{Denotative design}{\parskip 3ex
+
+Design methodology for typed, purely functional programming.
+
+\begin{itemize}\itemsep 2.5ex
+  \item Precise, simple, and compelling specification.
+  \item Based on familiar algebraic abstraction (with laws).
+  \item Informs \emph{use} and \emph{implementation} without entangling.
+  \item Principled construction of correct implementation.
+\end{itemize}
+}
+
+\framet{Example -- Linear transformations}{
 
 \emph{Assignment:}
 \begin{itemize}
-\item Represent 1D linear functions
+\item Represent linear transformations
 \item Implement identity and composition
 \end{itemize}
 
 \pause
+\vspace{3ex}
 
-\textbf{Goals:}
-\begin{itemize}
-  \item Precise, simple, and compelling specification
-  \item Based on familiar algebraic abstraction (with laws)
-  \item Principled construction of correct implementation
-\end{itemize}
-
-\pause
-
-\textbf{Plan:}
+\emph{Plan:}
 \begin{itemize}
   \item Represent
   \item Interpret
@@ -161,22 +179,21 @@ In Haskell,
 
 }
 
-\framet{1D linear function}{
+\framet{Warm-up: 1D linear transformations}{
 
 Represent:
+\pause
 
 > newtype Lin1 s = Scale s
 
-\pause
-
 Interpret:
+\pause
 
 > meaning :: Num s => Lin1 s -> (s -> s)
 > meaning (Scale s) = \ x -> s @* x
 
-\pause
-
 Specify:
+\pause
 
 > meaning idL       == id
 > meaning (g @. f)  == meaning g . meaning f
