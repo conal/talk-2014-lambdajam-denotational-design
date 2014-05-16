@@ -28,7 +28,8 @@
 \usepackage{color}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
-\usepackage{wasysym}
+%% \usepackage{wasysym}
+\usepackage{mathabx}
 \usepackage{setspace}
 \usepackage{enumerate}
 
@@ -129,11 +130,11 @@ In Haskell,
 
 }
 
-\framet{Denotative programming}{\parskip 2ex
+\framet{Denotative programming}{\parskip 4ex
 
-Peter Landin recommended ``denotative'' to replace fuzzy terms ``functional'' and ``declarative''.
+Peter Landin recommended ``denotative'' to replace ill-defined ``functional'' and ``declarative''.
 
-Properties:
+Properties:\vspace{-4ex}
 \begin{itemize}
   \item Nested expression structure.
   \item Each expression \emph{denotes} something,
@@ -146,15 +147,16 @@ Next 700 Programming Languages}})
 
 }
 
-\framet{Denotative design}{\parskip 3ex
+\framet{Denotative design}{ % \parskip 2ex
 
-Design methodology for typed, purely functional programming.
-
-\begin{itemize}\itemsep 2.5ex
+Design methodology for typed, purely functional programming:
+\begin{itemize}\itemsep 1.5ex
   \item Precise, simple, and compelling specification.
-  \item Based on familiar algebraic abstraction (with laws).
+  \item Standard algebraic abstractions.
   \item Informs \emph{use} and \emph{implementation} without entangling.
   \item Principled construction of correct implementation.
+  \item Free of abstraction leaks.
+  \item Laws for free.
 \end{itemize}
 }
 
@@ -171,37 +173,71 @@ Design methodology for typed, purely functional programming.
 
 \emph{Plan:}
 \begin{itemize}
-  \item Represent
-  \item Interpret
-  \item Specify
-  \item Calculate
+  \item Interface
+  \item Denotation
+  \item Representation
+  \item Calculate implementation
 \end{itemize}
 
 }
 
 \setlength{\fboxsep}{-1.7ex}
 
-\framet{Representation and meaning}{
+\framet{Interface and denotation}{
 
-Representation (data type):
+\begin{minipage}[c]{0.2\textwidth}Interface:\end{minipage}
+\fbox{\begin{minipage}[c]{0.7\textwidth}
+
+> type Lin :: * -> * -> *
+>
+> scale  :: Num s => Lin s s
+> idL    :: Lin a b
+> (@.)   :: Lin b c -> Lin a b -> Lin a c
+> ...
+
+\end{minipage}}
+
 \pause
+\begin{minipage}[c]{0.2\textwidth}Model:\end{minipage}
+\fbox{\begin{minipage}[c]{0.7\textwidth}
+
+> type a :-* b  -- Linear subset of |a -> b|
+>
+> meaning :: Lin a b -> (a :-* b)
+
+\end{minipage}}
+
+\pause
+\begin{minipage}[c]{0.2\textwidth}Specification:\end{minipage}
+\fbox{\begin{minipage}[c]{0.7\textwidth}
+
+> meaning (scale s)  == \ x -> s @* x
+> meaning idL        == id
+> meaning (g @. f)   == meaning g . meaning f
+> ...
+
+\end{minipage}}
+
+}
+
+\framet{Representation} {
+
+Start with 1D.
+Recall partial specification:
+
+> meaning (scale s) == \ x -> s @* x
+
+Try a direct data type representation:
 
 > data Lin :: * -> * -> * SPACE where
 >   Scale :: Num s => Lin s s   -- ...
-
-Interpretation (model):
-\pause
-
-> type a :-* b  -- Linear subset of |a -> b|
-
+>
 > meaning :: Lin a b -> (a :-* b)
 > meaning (Scale s) = \ x -> s @* x
 
-Specification (semantics):
-\pause
+Spec trivially satisfied: |scale = Scale|.
 
-> meaning idL       == id
-> meaning (g @. f)  == meaning g . meaning f
+Trivial, but others are more interesting.
 
 }
 
@@ -310,7 +346,7 @@ Linear map semantics:
 > meaning :: Lin a b -> (a :-* b)
 > meaning (Scale s) = \ x -> s @* x
 
-Specification as homomorphism:
+Specification as homomorphism (no abstraction leak):
 
 > meaning id       == id
 > meaning (g . f)  == meaning g . meaning f
@@ -330,7 +366,7 @@ Correct-by-construction implementation:
 \begin{minipage}[c]{0.3\textwidth}
 |Category| laws:
 \end{minipage}
-\fbox{\begin{minipage}[c]{0.5\textwidth}
+\fbox{\begin{minipage}[c]{0.45\textwidth}
 
 > id . f       == f
 > g . id       == id
@@ -372,6 +408,44 @@ Proofs follow from semantic homomorphism:
 \end{center}
 
 Works for other classes as well.
+}
+
+\framet{Higher dimensions}{
+
+\begin{minipage}[c]{0.2\textwidth}
+Interface:
+\end{minipage}
+\fbox{\begin{minipage}[c]{0.7\textwidth}
+
+> exl    :: Lin (a :* b) a
+> exr    :: Lin (a :* b) b
+> (&&&)  :: Lin a c  -> Lin a d  -> Lin a (c :* d)
+> SPACE
+> inl    :: Lin a (a :* b)
+> inr    :: Lin b (a :* b)
+> (|||)  :: Lin a c  -> Lin b c  -> Lin (a :* b) c
+
+\end{minipage}}
+\vspace{1ex}
+
+\begin{minipage}[c]{0.15\textwidth}
+Semantics:
+\end{minipage}
+\fbox{\begin{minipage}[c]{0.4\textwidth}
+
+> meaning exl        == exl
+> meaning exr        == exr
+> meaning (f &&& g)  == meaning f &&& meaning g
+
+\end{minipage}}
+\fbox{\begin{minipage}[c]{0.4\textwidth}
+
+> meaning exl        == exl
+> meaning exr        == exr
+> meaning (f &&& g)  == meaning f &&& meaning g
+
+\end{minipage}}
+\vspace{1ex}
 
 }
 
