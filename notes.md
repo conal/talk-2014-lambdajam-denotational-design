@@ -10,6 +10,9 @@
 
 [*Reimagining matrices*]: http://conal.net/blog/posts/reimagining-matrices "blog post"
 
+[*Can Programming Be Liberated from the von Neumann Style? A Functional Style and Its Algebra of Programs*]: http://www.thocp.net/biographies/papers/backus_turingaward_lecture.pdf "John Backus's 1977 Turing Award lecture"
+
+[*The Next 700 Programming Languages*]: http://www.cs.cmu.edu/~crary/819-f09/Landin66.pdf "Paper by Peter Landin (1966)"
 
 ## Miscellaneous thoughts
 
@@ -136,3 +139,18 @@ Among the precise and adequate candidates, we want to optimize for the following
 *   [Matrices][*Reimagining matrices*]
 *   [Fold fusion][*Another lovely example of type class morphisms*]
 
+From [*Can Programming Be Liberated from the von Neumann Style? A Functional Style and Its Algebra of Programs*]:
+ <blockquote>
+
+Conventional programming languages are growing ever more enormous, but not stronger. Inherent defects at the most basic level cause them to be both fat and weak: their primitive word-at-a-time style of programming inherited from their common ancestor---the von Neumann computer, their close coupling of semantics to state transitions, their division of programming into a world of expressions and a world of statements, their inability to effectively use powerful combining forms for building new programs from existing ones, and their lack of useful mathematical properties for reasoning about programs.
+
+ </blockquote>
+
+From [*The Next 700 Programming Languages*]:
+ <blockquote>
+
+The commonplace expressions of arithmetic and algebra have a certain simplicity that most communications to computers lack. In particular, (a) each expression has a nesting subexpression structure, (b) each subexpression denotes something (usually a number, truth value or numerical function), (c) the thing an expression denotes, i.e., its "value", depends only on the values of its sub-expressions, not on other properties of them.
+
+It is these properties, and crucially (c), that explains why such expressions are easier to construct and understand. Thus it is (c) that lies behind the evolutionary trend towards "bigger righthand sides" in place of strings of small, explicitly sequenced assignments and jumps. When faced with a new notation that borrows the functional appearance of everyday algebra, it is (c) that gives us a test for whether the notation is genuinely functional or merely masquerading.
+
+ </blockquote>

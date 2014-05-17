@@ -7,9 +7,9 @@
 \usepackage{latexsym}
 %% \usepackage{bbold}  %% for $\mathbbm{1}$
 
-%% Look for the \smalltriangleup definition. I expected it in amssymb
-\nc\smalltriangleup{\scriptscriptstyle \triangle}
-\nc\smalltriangledown{\scriptscriptstyle \triangledown}
+%% %% Look for the \smalltriangleup definition. I expected it in amssymb
+%% \nc\smalltriangleup{\scriptscriptstyle \triangle}
+%% \nc\smalltriangledown{\scriptscriptstyle \triangledown}
 
 \nc\out[1]{}
 
@@ -102,44 +102,14 @@
 %% \PreviewEnvironment{tikzpicture}
 %%%>
 \usepackage{amsmath}
-\usepackage{tikz-cd}
 
-% I used tikz-cd version 0.3c, of December 30, 2012.
-% July 2012 version lacks a feature I use (shift left).
+%% \usepackage{tikz-cd}
 
-\usetikzlibrary{matrix, calc, arrows}
+%% % I used tikz-cd version 0.3c, of December 30, 2012.
+%% % July 2012 version lacks a feature I use (shift left).
 
-% \nc{\Opid}[1]{\operatorname{#1}}
-\nc{\Opid}[1]{\Varid{#1}}
-\nc{\Varap}[1]{\Opid{#1}\,}
-\nc{\Varapp}[2]{\Varap{#1}{(#2)}}
-
-\nc{\fmap}{\Varap{F}}
-\nc{\fmapf}[1]{\fmap #1}
-\nc{\fmapp}[1]{\fmapf{(#1)}}
-\nc{\f}{\fmap}
-\nc{\F}{\fmap}
-\nc{\FixF}{\mu \Varid{F}}
-\nc{\FFixF}{\F (\FixF)}
-
-\nc{\Maybe}{\Varap{Maybe}}
-\nc{\List}[1]{[#1]}
-\nc{\Tree}{\Varap{T}}
-\nc{\foldL}{\Varap{fold_L}}
-\nc{\unfoldL}{\Varap{unfold_L}}
-\nc{\foldT}{\Varap{fold_T}}
-\nc{\unfoldT}{\Varap{unfold_T}}
-
-\nc{\fold}{\Varap{fold}}
-\nc{\unfold}{\Varap{unfold}}
-\nc{\hylo}{\Varap{hylo}}
-\nc{\Fix}{\Varap{Fix}}
-\nc{\Roll}{\Opid{Roll}}
-\nc{\unRoll}{\Opid{unRoll}}
-
-\nc{\comp}{\,\circ\,}
-
-\tikzset{ ampersand replacement=\& }
+%% \usetikzlibrary{matrix, calc, arrows}
+%% \tikzset{ ampersand replacement=\& }
 
 \nc\wpicture[2]{\includegraphics[width=#1]{#2}}
 
@@ -155,3 +125,5 @@
 \nc\framet[2]{\frame{\frametitle{#1}#2}}
 
 \nc\hidden[1]{}
+
+\nc\Back{\!\!\!\!\!\!\!}

@@ -17,7 +17,14 @@
 
 \usefonttheme{serif}
 
-\usepackage{beamerthemesplit}
+\usepackage{hyperref}
+\usepackage{color}
+
+\definecolor{linkColor}{rgb}{0,0,0.5}
+
+\hypersetup{colorlinks=true,urlcolor=linkColor}
+
+%% \usepackage{beamerthemesplit}
 
 %% % http://www.latex-community.org/forum/viewtopic.php?f=44&t=16603
 %% \makeatletter
@@ -27,6 +34,7 @@
 \usepackage{graphicx}
 \usepackage{color}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
+
 
 %% \usepackage{wasysym}
 \usepackage{mathabx}
@@ -127,18 +135,16 @@ In Haskell,
   \item Laws
   \item Semantic type class morphisms (TCMs)
 \end{itemize}
-
 }
 
 \framet{Denotative programming}{\parskip 4ex
-
 Peter Landin recommended ``denotative'' to replace ill-defined ``functional'' and ``declarative''.
 
 Properties:\vspace{-4ex}
 \begin{itemize}
   \item Nested expression structure.
   \item Each expression \emph{denotes} something,
-  \item depending only on subexpression denotations.
+  \item depending only on denotations of subexpressions.
 \end{itemize}
 
 ``\ldots gives us a test for whether the notation is genuinely functional or merely masquerading.''
@@ -148,7 +154,6 @@ Next 700 Programming Languages}})
 }
 
 \framet{Denotative design}{ % \parskip 2ex
-
 Design methodology for typed, purely functional programming:
 \begin{itemize}\itemsep 1.5ex
   \item Precise, simple, and compelling specification.
@@ -161,7 +166,6 @@ Design methodology for typed, purely functional programming:
 }
 
 \framet{Example -- Linear transformations}{
-
 \emph{Assignment:}
 \begin{itemize}
 \item Represent linear transformations
@@ -176,7 +180,7 @@ Design methodology for typed, purely functional programming:
   \item Interface
   \item Denotation
   \item Representation
-  \item Calculate implementation
+  \item Calculation (implementation)
 \end{itemize}
 
 }
@@ -191,7 +195,7 @@ Design methodology for typed, purely functional programming:
 > type Lin :: * -> * -> *
 >
 > scale  :: Num s => Lin s s
-> idL    :: Lin a b
+> idL    :: Lin a a
 > (@.)   :: Lin b c -> Lin a b -> Lin a c
 > ...
 
@@ -412,51 +416,301 @@ Works for other classes as well.
 
 \framet{Higher dimensions}{
 
-\begin{minipage}[c]{0.2\textwidth}
 Interface:
-\end{minipage}
-\fbox{\begin{minipage}[c]{0.7\textwidth}
 
-> exl    :: Lin (a :* b) a
-> exr    :: Lin (a :* b) b
 > (&&&)  :: Lin a c  -> Lin a d  -> Lin a (c :* d)
-> SPACE
-> inl    :: Lin a (a :* b)
-> inr    :: Lin b (a :* b)
 > (|||)  :: Lin a c  -> Lin b c  -> Lin (a :* b) c
 
-\end{minipage}}
-\vspace{1ex}
+~
 
-\begin{minipage}[c]{0.15\textwidth}
 Semantics:
-\end{minipage}
-\fbox{\begin{minipage}[c]{0.4\textwidth}
 
-> meaning exl        == exl
-> meaning exr        == exr
-> meaning (f &&& g)  == meaning f &&& meaning g
+> meaning (f &&& g)  == \ a -> (f a, g a)
+> meaning (f ||| g)  == \ (a,b) -> f a + g b
 
-\end{minipage}}
-\fbox{\begin{minipage}[c]{0.4\textwidth}
+~
 
-> meaning exl        == exl
-> meaning exr        == exr
-> meaning (f &&& g)  == meaning f &&& meaning g
-
-\end{minipage}}
-\vspace{1ex}
+Look familiar?
 
 }
 
-\end{document}
+\framet{Products and coproducts}{
 
-Supporting abstraction for identity & composition?
+> class Category k => ProductCat k where
+>   type Prod k a b
+>   exl    :: k (Prod k a b) a
+>   exr    :: k (Prod k a b) b
+>   (&&&)  :: k a c  -> k a d  -> k a (Prod k c d)
+> SPACE
+> class Category k => CoproductCat k where
+>   type Coprod k a b
+>   inl    :: k a (Coprod k a b)
+>   inr    :: k b (Coprod k a b)
+>   (|||)  :: k a c  -> k b c  -> k (Coprod k a b) c
+
+Similar to |Arrow| and |ArrowChoice| classes.
+
+}
+
+\framet{Semantic morphisms}{
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+> meaning exl        == exl
+> meaning exr        == exr
+> meaning (f &&& g)  == meaning f &&& meaning g
+
+\end{minipage}}
+\hspace{0.02\textwidth}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+> meaning inl        == inl
+> meaning inr        == inr
+> meaning (f ||| g)  == meaning f ||| meaning g
+
+\end{minipage}}
+\end{center}
+
+For |a :-* b|,
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+> type Prod (:-*) a b = a :* b
+> exl (a,b) = a
+> exr (a,b) = b
+
+\end{minipage}}
+\hspace{0.02\textwidth}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+> type Coprod (:-*) a b = a :* b
+> inl a = (a,0)
+> inr b = (0,b)
+
+\end{minipage}}
+\end{center}
+
+For calculation, see blog post \href{http://conal.net/blog/posts/reimagining-matrices}{\emph{Reimagining
+matrices}}.
+
+}
+
+\framet{Functional reactive programming}{
 
 \pause
 
-> data Lin :: * -> * -> * SPACE where
->   Scale :: Num s => s -> Lin s s
+Two essential properties:
+\begin{itemize}
+  \item \emph{Continuous} time!
+  (Natural \& composable.)
+\item Denotational design.
+  (Elegant \& rigorous.)
+\end{itemize}
+{\parskip 3ex
+
+\pause
+
+Deterministic, continuous ``concurrency''.
+
+More aptly, \emph{``Denotative continuous-time programming''} (DCTP).
+
+Warning: many modern ``FRP'' systems have neither property.
+}
+}
+
+\framet{Denotational design}{
+
+Central type:
+
+> type Behavior a
+
+Model:
+
+> meaning :: Behavior a -> (T -> a)
+
+\pause
+
+Suggests API and semantics (via morphisms).
+
+What standard algebraic abstractions does the model inhabit?
+
+\pause
+|Monoid|, |Functor|, |Applicative|, |Monad|, |Comonad|.
+
+}
+
+\framet{Functor}{
+
+> instance Functor ((->) t) where
+>   fmap f h = f . h
+
+Morphism:
+
+>     meaning (fmap f b)
+> ==  fmap f (meaning b)
+> SPACE
+> ==  f . meaning b
+
+}
+
+\framet{Applicative}{
+
+> instance Applicative ((->) t) where
+>   pure a = \ t -> a
+>   g <*> h = \ t -> (g t) (h t)
+
+Morphisms:
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+>     meaning (pure a)
+> ==  pure a
+> SPACE
+> ==  \ t -> a
+
+\end{minipage}}
+\hspace{0.02\textwidth}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+>     meaning (fs <*> xs)
+> ==  meaning fs <*> meaning xs
+> SPACE
+> ==  \ t -> (meaning' fs t) (meaning' xs t)
+
+\end{minipage}}
+\end{center}
+
+Corresponds exactly to the original FRP denotation.
+
+}
+
+\framet{Monad}{
+
+> instance Monad ((->) t) where
+>   join ff = \ t -> ff t t
+
+Monad morphism:
+
+> meaning (join mm) == join (meaning (fmap meaning mm))
+
+\hidden{
+Types:
+
+> mm :: m (m a)
+> fmap meaning mm :: m (m' a)
+> meaning (fmap meaning mm) :: m' (m' a)
+> join (meaning (fmap meaning mm)) :: m' a
+
+}
+For behaviors,
+
+>     meaning (join bb)
+> ==  join (meaning (fmap meaning bb))
+> SPACE
+> == \ t -> meaning' (meaning . bb) t t
+> == \ t -> meaning' (meaning' bb t) t
+
+}
+
+\framet{Comonad}{
+
+> class Comonad w where
+>   coreturn :: w a -> a
+>   cojoin   :: w a -> w (w a)
+
+Functions:
+
+> instance Monoid t => Comonad ((->) t) where
+>   coreturn :: (t -> a) -> a
+>   coreturn f = f mempty
+>   cojoin f = \ t t' -> f (t <> t')
+
+Suggest a relative time model.
+
+}
+
+\framet{Image manipulation}{
+
+\pause
+Central type:
+
+> type Image a
+
+\pause
+Model:
+
+> meaning :: Image a -> (R2 -> a)
+
+\pause
+As with behaviors,
+\begin{itemize}
+  \item Suggests API and semantics (via morphisms).
+  \item Classes: |Monoid|, |Functor|, |Applicative|, |Monad|, |Comonad|.
+\end{itemize}
+
+See \href{http://conal.net/Pan}{Pan page} for pictures \& papers.
+
+}
+
+\framet{Memo tries}{
+
+> type a :->: b
+>
+> meaning :: (a :->: b) -> (a -> b)
+
+This time, |meaning| has an inverse.
+
+~
+
+Exploit inverses to calculate instances.
+Example:
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.4\textwidth}
+
+>      meaning id == id
+> <==  id == meaningInv id
+
+\end{minipage}}
+\hspace{0.02\textwidth}
+\fbox{\begin{minipage}[c]{0.5\textwidth}
+
+>      meaning (g . f) == meaning g . meaning f
+> <==  g . f == meaningInv (meaning g . meaning f)
+
+\end{minipage}}
+\end{center}
+}
+
+\framet{Denotative design}{ % \parskip 2ex
+Design methodology for typed, purely functional programming:
+\begin{itemize}\itemsep 1.5ex
+  \item Precise, simple, and compelling specification.
+  \item Standard algebraic abstractions.
+  \item Informs \emph{use} and \emph{implementation} without entangling.
+  \item Principled construction of correct implementation.
+  \item Free of abstraction leaks.
+  \item Laws for free.
+\end{itemize}
+}
+
+\framet{References}{
+\begin{itemize}
+\item
+  \href{http://conal.net/papers/type-class-morphisms/}{\emph{Denotational design with type class morphisms}}
+\item
+  \href{http://conal.net/papers/push-pull-frp/}{\emph{Push-pull functional reactive programming}}
+\item
+  \href{http://conal.net/papers/functional-images/}{\emph{Functional Images}}
+\item
+  \href{http://conal.net/blog/tag/http://conal.net/blog/tag/type-class-morphism/}{Posts on type class morphisms}
+\end{itemize}
+}
+
+\end{document}
 
 \pause
 \textbf{Key ideas:}

@@ -36,22 +36,26 @@ instance Category (->) where
   (.) = (P..)
 
 {--------------------------------------------------------------------
-    
+    Meanings
 --------------------------------------------------------------------}
 
 class Meaningful a where
   type Meaning a
   meaning :: a -> Meaning a
 
-data LFun :: * -> * -> * where
-  Scale :: Num a => a -> LFun a a
+{--------------------------------------------------------------------
+    1D linear transformations
+--------------------------------------------------------------------}
+ 
+data Lin :: * -> * -> * where
+  Scale :: Num a => a -> Lin a a
 
-instance Meaningful (LFun a b) where
-  type Meaning (LFun a b) = a -> b  -- really, _linear_ functions
+instance Meaningful (Lin a b) where
+  type Meaning (Lin a b) = a -> b  -- really, _linear_ functions
   meaning (Scale s) = (s*)
 
-instance Category LFun where
-  type Obj LFun = Num
+instance Category Lin where
+  type Obj Lin = Num
   id = Scale 1
   Scale s . Scale s' = Scale (s * s')
 
