@@ -37,9 +37,10 @@ Some follow-up remarks, based on questions & discussion during and after the tal
     (See [*Why Functional Programming Matters*](http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html).)
     Modularity comes from providing information while making as few restrictive assumptions as possible about how that information can be used.
     Laziness lets us build infinite data structures, thus not assuming what finite subset any particular usage will access.
-    By also not assuming the *frequency* of sampling (even that it's constant), continuous time (and space) place even fewer restrictions about what finite subset of information will be accessed and is thus even more modular.
+    By also not assuming the *frequency* of sampling (even that it's constant), continuous time and space place even fewer restrictions about what finite subset of information will be accessed and is thus even more modular.
 *   Continuous time allows integration and differentiation to be expressed directly and meaningfully.
     In discrete-time systems, one instead has to clutter their program by including numeric approximation algorithms for integration and differentiation, usually via very badly behaved algorithm such as Euler integration and naïve finite differencing.
+    (For instance, [the Mario example in Elm](http://elm-lang.org/edit/examples/Intermediate/Mario.elm) includes two explicit Euler approximations.)
     The result is inaccurate, and the program fails to say what it means (and instead says one way to approximate it).
     Switching to a better algorithm means further complicating an application with operational distractions.
     In contrast, even in [TBAG](http://conal.net/tbag/) (an early '90s predecessor to the FRP systems ActiveVRML and Fran), thanks to continuous time we were able to express examples in a very natural way as systems of ODEs (expressed via mutually recursive continuous integrals) and then solve them automatically, using a fourth-order Runge-Kutta with adaptive step size determination.
