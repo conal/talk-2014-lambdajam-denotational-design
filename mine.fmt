@@ -48,15 +48,17 @@
 
 %format NO = "{}"
 
-%format :-* = "\multimap"
+%format -* = "\multimap"
 
-%% %format (::-*) = "(:\multimap)"
-%% %format a ::-* b = a ":" :-* b
+%format :-* = "\mathbin{:"-*"}"
 
-%format Linn = Lin
+%% %format :-* = "\mathbin{\mathtt{:\!\!-\!*}}"
 
-%%  %format Linn = "(:" :-* ")"
-%%  %format Lin (a) (b) = a ":" :-* b
+
+%format Lin = "(":-*")"
+
+%format :&& = "\mathbin{:\!"&&&"}"
+%format :|| = "\mathbin{:\!"|||"}"
 
 %format *** = "\mathbin{\times}"
 %format &&& = "\mathbin{\smalltriangleup}"

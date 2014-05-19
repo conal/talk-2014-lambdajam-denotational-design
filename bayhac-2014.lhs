@@ -20,7 +20,7 @@
 \usepackage{hyperref}
 \usepackage{color}
 
-\definecolor{linkColor}{rgb}{0,0,0.5}
+\definecolor{linkColor}{rgb}{0.62,0,0}
 
 \hypersetup{colorlinks=true,urlcolor=linkColor}
 
@@ -55,8 +55,8 @@
 %include greek.fmt
 %include mine.fmt
 
-\title{Denotational design}
-\subtitle{From programs to meanings}
+\title{Denotational Design}
+\subtitle{from meanings to programs}
 \author{\href{http://conal.net}{Conal Elliott}}
 \institute{\href{http://tabula.com/}{Tabula}}
 % Abbreviate date/venue to fit in infolines space
@@ -93,6 +93,13 @@
 
 \frame{\titlepage}
 
+\framet{Abstraction}{
+\large \setstretch{1.5}
+\quote{The purpose of abstraction is not to be vague,\\
+but to create a new semantic level\\
+in which one can be absolutely precise.}{Edsger Dijkstra}
+}
+
 \framet{Not even wrong}{\parskip 2ex
 
 Conventional programming is precise only about how, not what.
@@ -105,13 +112,6 @@ Conventional programming is precise only about how, not what.
 
 }
 
-\framet{Abstraction}{
-\large \setstretch{1.5}
-\quote{The purpose of abstraction is not to be vague,\\
-but to create a new semantic level\\
-in which one can be absolutely precise.}{Edsger Dijkstra}
-}
-
 \framet{Library design}{ \parskip 3ex
 
 Goal: precise, elegant, reusable abstractions.
@@ -122,7 +122,7 @@ Where have such things been developed?
 \emph{Math --- abstract algebra.}
 
 \pause
-\emph{Homomorphisms} for non-leaky abstractions.
+Non-leaky abstraction |==| \emph{homomorphism}.
 
 \vspace{3ex}
 \pause
@@ -153,19 +153,19 @@ Next 700 Programming Languages}})
 
 }
 
-\framet{Denotative design}{ % \parskip 2ex
-Design methodology for typed, purely functional programming:
+\framet{Denotational design}{ % \parskip 2ex
+Design methodology for ``genuinely functional'' programming:
 \begin{itemize}\itemsep 1.5ex
   \item Precise, simple, and compelling specification.
+  \item Informs \emph{use} and \emph{implementation} without entangling them.
   \item Standard algebraic abstractions.
-  \item Informs \emph{use} and \emph{implementation} without entangling.
-  \item Principled construction of correct implementation.
   \item Free of abstraction leaks.
   \item Laws for free.
+  \item Principled construction of correct implementation.
 \end{itemize}
 }
 
-\framet{Example -- Linear transformations}{
+\framet{Example -- linear transformations}{
 \emph{Assignment:}
 \begin{itemize}
 \item Represent linear transformations
@@ -194,9 +194,9 @@ Design methodology for typed, purely functional programming:
 
 > type Lin :: * -> * -> *
 >
-> scale  :: Num s => Lin s s
-> idL    :: Lin a a
-> (@.)   :: Lin b c -> Lin a b -> Lin a c
+> scale  :: Num s => (s :-* s)
+> idL    :: a :-* a
+> (@.)   :: (b :-* c) -> (a :-* b) -> (a :-* c)
 > ...
 
 \end{minipage}}
@@ -205,9 +205,9 @@ Design methodology for typed, purely functional programming:
 \begin{minipage}[c]{0.2\textwidth}Model:\end{minipage}
 \fbox{\begin{minipage}[c]{0.7\textwidth}
 
-> type a :-* b  -- Linear subset of |a -> b|
+> type a -* b  -- Linear subset of |a -> b|
 >
-> meaning :: Lin a b -> (a :-* b)
+> meaning :: (a :-* b) -> (a -* b)
 
 \end{minipage}}
 
@@ -234,14 +234,14 @@ Recall partial specification:
 Try a direct data type representation:
 
 > data Lin :: * -> * -> * SPACE where
->   Scale :: Num s => Lin s s   -- ...
+>   Scale :: Num s => s -> (s :-* s)   -- ...
 >
-> meaning :: Lin a b -> (a :-* b)
+> meaning :: (a :-* b) -> (a -* b)
 > meaning (Scale s) = \ x -> s @* x
 
-Spec trivially satisfied: |scale = Scale|.
+Spec trivially satisfied by |scale = Scale|.
 
-Trivial, but others are more interesting.
+Others are more interesting.
 
 }
 
@@ -250,15 +250,6 @@ Trivial, but others are more interesting.
 \nc\bboxed[1]{\boxed{\rule[-0.9ex]{0pt}{2.8ex}#1}}
 
 \framet{Calculate an implementation}{
-
-\hidden{
-Define
-
-> id    :: Lin a b
-> (@.)  :: Lin b c -> Lin a b -> Lin a c
-
-such that
-}
 
 \vspace{-1ex}
 Specification:\vspace{-1ex}
@@ -324,6 +315,8 @@ In general,
   \item Note that laws hold.
 \end{itemize}
 
+~
+
 What standard abstraction to use for |Lin|?
 }
 
@@ -338,7 +331,7 @@ Interface:
 Laws:
 
 > id . f       == f
-> g . id       == id
+> g . id       == g
 > (h . g) . f  == h . (g . f)
 
 }
@@ -347,7 +340,7 @@ Laws:
 
 Linear map semantics:
 
-> meaning :: Lin a b -> (a :-* b)
+> meaning :: (a :-* b) -> (a -* b)
 > meaning (Scale s) = \ x -> s @* x
 
 Specification as homomorphism (no abstraction leak):
@@ -367,23 +360,26 @@ Correct-by-construction implementation:
 
 %% Semantic homomorphisms guarantee class laws. For `Category`,
 
-\begin{minipage}[c]{0.3\textwidth}
-|Category| laws:
-\end{minipage}
+\begin{center}
+\fbox{\begin{minipage}[c]{0.4\textwidth}
+
+> meaning id       == id
+> meaning (g . f)  == meaning g . meaning f
+
+\end{minipage}}
+\begin{minipage}[c]{0.07\textwidth}\begin{center}$\Rightarrow$\end{center}\end{minipage}
 \fbox{\begin{minipage}[c]{0.45\textwidth}
 
 > id . f       == f
-> g . id       == id
+> g . id       == g
 > (h . g) . f  == h . (g . f)
 
 \end{minipage}}
-\vspace{1ex}
-
+\end{center}
+\vspace{-1ex}
 where equality is \emph{semantic}.
 \pause
-
-Proofs follow from semantic homomorphism:
-
+Proofs:
 \begin{center}
 \fbox{\begin{minipage}[c]{0.3\textwidth}
 
@@ -418,8 +414,8 @@ Works for other classes as well.
 
 Interface:
 
-> (&&&)  :: Lin a c  -> Lin a d  -> Lin a (c :* d)
-> (|||)  :: Lin a c  -> Lin b c  -> Lin (a :* b) c
+> (&&&)  :: (a :-* c)  -> (a :-* d)  -> (a :-* c :* d)
+> (|||)  :: (a :-* c)  -> (b :-* c)  -> (a :* b :-* c)
 
 ~
 
@@ -427,10 +423,6 @@ Semantics:
 
 > meaning (f &&& g)  == \ a -> (f a, g a)
 > meaning (f ||| g)  == \ (a,b) -> f a + g b
-
-~
-
-Look familiar?
 
 }
 
@@ -472,28 +464,44 @@ Similar to |Arrow| and |ArrowChoice| classes.
 \end{minipage}}
 \end{center}
 
-For |a :-* b|,
+For |a -* b|,
 
 \begin{center}
 \fbox{\begin{minipage}[c]{0.48\textwidth}
 
-> type Prod (:-*) a b = a :* b
-> exl (a,b) = a
-> exr (a,b) = b
+> type Prod (-*) a b = a :* b
+> exl  (a,b) = a
+> exr  (a,b) = b
+> f &&& g = \ a -> (f a, g a)
 
 \end{minipage}}
 \hspace{0.02\textwidth}
 \fbox{\begin{minipage}[c]{0.48\textwidth}
 
-> type Coprod (:-*) a b = a :* b
-> inl a = (a,0)
-> inr b = (0,b)
+> type Coprod (-*) a b = a :* b
+> inl  a = (a,0)
+> inr  b = (0,b)
+> f ||| g = \ (a,b) -> f a + g b
 
 \end{minipage}}
 \end{center}
 
 For calculation, see blog post \href{http://conal.net/blog/posts/reimagining-matrices}{\emph{Reimagining
 matrices}}.
+
+}
+
+\framet{Full representation and denotation}{
+
+> data Lin :: * -> * -> * SPACE where
+>   Scale :: Num s => s -> (s :-* s)
+>   (:&&) :: (a :-* c)  -> (a :-* d)  -> (a :-* c :* d)
+>   (:||) :: (a :-* c)  -> (b :-* c)  -> (a :* b :-* c)
+
+> meaning :: (a :-* b) -> (a -* b)
+> meaning (Scale s)   = \ x -> s @* x
+> meaning (f :&&  g)  = \ a -> (f a, g a)
+> meaning (f :||  g)  = \ (a,b) -> f a + g b
 
 }
 
@@ -558,8 +566,8 @@ Morphism:
 \framet{Applicative}{
 
 > instance Applicative ((->) t) where
->   pure a = \ t -> a
->   g <*> h = \ t -> (g t) (h t)
+>   pure a   = \ t -> a
+>   g <*> h  = \ t -> (g t) (h t)
 
 Morphisms:
 
@@ -592,26 +600,19 @@ Corresponds exactly to the original FRP denotation.
 > instance Monad ((->) t) where
 >   join ff = \ t -> ff t t
 
-Monad morphism:
-
-> meaning (join mm) == join (meaning (fmap meaning mm))
-
-\hidden{
-Types:
-
-> mm :: m (m a)
-> fmap meaning mm :: m (m' a)
-> meaning (fmap meaning mm) :: m' (m' a)
-> join (meaning (fmap meaning mm)) :: m' a
-
-}
-For behaviors,
+Morphism:
+\begin{center}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
 
 >     meaning (join bb)
-> ==  join (meaning (fmap meaning bb))
+> ==  join (fmap meaning (meaning bb))
 > SPACE
-> == \ t -> meaning' (meaning . bb) t t
-> == \ t -> meaning' (meaning' bb t) t
+> ==  join (meaning . meaning bb)
+> ==  \ t -> (meaning . meaning bb) t t
+> ==  \ t -> meaning (meaning bb t) t
+
+\end{minipage}}
+\end{center}
 
 }
 
@@ -685,20 +686,21 @@ Example:
 \end{center}
 }
 
-\framet{Denotative design}{ % \parskip 2ex
+\framet{Denotational design}{ % \parskip 2ex
+\pause
 Design methodology for typed, purely functional programming:
 \begin{itemize}\itemsep 1.5ex
   \item Precise, simple, and compelling specification.
-  \item Standard algebraic abstractions.
   \item Informs \emph{use} and \emph{implementation} without entangling.
-  \item Principled construction of correct implementation.
+  \item Standard algebraic abstractions.
   \item Free of abstraction leaks.
   \item Laws for free.
+  \item Principled construction of correct implementation.
 \end{itemize}
 }
 
 \framet{References}{
-\begin{itemize}
+\begin{itemize} \itemsep 1.5ex
 \item
   \href{http://conal.net/papers/type-class-morphisms/}{\emph{Denotational design with type class morphisms}}
 \item
@@ -707,6 +709,10 @@ Design methodology for typed, purely functional programming:
   \href{http://conal.net/papers/functional-images/}{\emph{Functional Images}}
 \item
   \href{http://conal.net/blog/tag/http://conal.net/blog/tag/type-class-morphism/}{Posts on type class morphisms}
+\item
+  \href{https://github.com/conal/talk-2014-bayhac-denotational-design}{This talk}
+%% \item \href{http://conal.net/blog/posts/early-inspirations-and-new-directions-in-functional-reactive-programming/}{\emph{Early inspirations and new directions in functional reactive programming}}
+
 \end{itemize}
 }
 

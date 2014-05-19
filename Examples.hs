@@ -78,3 +78,4 @@ instance Category Lin where
 == meaning (Scale (s * s'))
 
 #endif
+
