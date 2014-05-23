@@ -18,7 +18,7 @@ This practice, which goes by the fancy name of "denotational semantics" (invente
 
 Rather than using semantics to *explain* an existing library (or language), we can instead use it to *design* one.
 It is often much easier and more enlightening to define a denotation than an implementation, because it does not have any constraints or distractions of efficiency, or even of executability.
-As an example, this style gave rise to [Functional Reactive Programming (FRP)](http://stackoverflow.com/questions/5875929/specification-for-a-functional-reactive-programming-language/5878525#5878525), where the semantic model of "behaviors" (dynamic values) is simply functions of infinite, continuous time.
+As an example, this style gave rise to [Functional Reactive Programming (FRP)](http://stackoverflow.com/questions/5875929/specification-for-a-functional-reactive-programming-language/5878525#5878525), in which the semantic model of "behaviors" (dynamic values) was simply functions of infinite, continuous time.
 Similarly, the [Pan system](http://conal.net/Pan) applies this same idea to space instead of time, defining the semantics of an "image" to be a function over infinite, continuous 2D space.
 Such meanings effectively and precisely capture the essence of a library's intent without the distraction of operational details.
 By doing so, these meanings offer library users a simpler but precise understanding of a library, while giving library developers an unambiguous definition of exactly *what* specification they must implement, while leaving a great deal of room for creativity about *how*.
