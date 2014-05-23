@@ -39,17 +39,21 @@ Some follow-up remarks, based on questions & discussion during and after the tal
     Laziness lets us build infinite data structures, thus not assuming what finite subset any particular usage will access.
     By also not assuming the *frequency* of sampling (even that it's constant), continuous time and space place even fewer restrictions about what finite subset of information will be accessed and is thus even more modular.
 *   Continuous time allows integration and differentiation to be expressed directly and meaningfully.
-    In discrete-time systems, one instead has to clutter programs by including numeric approximation algorithms for integration and differentiation, usually via very badly behaved algorithm such as Euler integration and naïve finite differencing.
+    In discrete-time systems, one instead has to clutter programs by including numeric approximation algorithms for integration and differentiation, usually via very badly behaved algorithm such as Euler integration and naive finite differencing.
     For instance, in games, it's typical to have a character move based on user-chosen direction, plus forces like gravity & drag.
-    In comparison with a direct continuous specification via integration, the result is inaccurate, and the program fails to say what it means (and instead says one way to approximate it).
-    Switching to a better algorithm would mean further complicating an application with operational distractions.
-    In contrast, even in [TBAG](http://conal.net/tbag/) (an early '90s predecessor to the FRP systems ActiveVRML and Fran), thanks to continuous time we were able to express examples in a very natural way as systems of ODEs (expressed via mutually recursive integrals) and then solve them automatically, using a fourth-order Runge-Kutta with adaptive step size determination.
+    The easiest path for an implementor is to use Euler integration (`(x,y) := (x + dt * vx, y + dt * vy); (vx,vy) := (vx + dt * ax, vy + dt * ay)`) at the visual sampling rate.
+    In comparison with a direct continuous specification via integration, the result is necessarily inaccurate, and the program still fails to say what it means (and instead says one way to approximate it).
+    Switching to a more accurate and efficient algorithm would mean further complicating an application with significant operational distractions (especially if changing sampling rate).
+    In contrast, even in [TBAG](http://conal.net/tbag/) (an early '90s predecessor to the FRP systems [ActiveVRML](http://conal.net/papers/ActiveVRML/) and [Fran](http://conal.net/papers/icfp97/)), thanks to continuous time we were able to express examples in a very natural way as systems of ODEs (expressed via mutually recursive integrals) and then solve them automatically, using a fourth-order Runge-Kutta with adaptive step size determination.
+    A simple declarative specification and an efficient accurate implementation.
+    Importantly, the numeric integration sampling pattern and the visual sampling rates were entirely decoupled, so each could make good choices.
 *   Multiple discrete input sources typically enter the system at different rates.
     Combining them in discrete-time systems thus leads to awkward issues of alignment.
     With continuous behaviors/signals, there are no rates to be out of sync.
     In other words, the alignment is done automatically (to infinite resolution) as soon as the discrete streams enter the system.
     Afterward, combining them is effortless and easily given a precise description.
 *   With continuous time, implementations can intelligently adapt sampling rates for accuracy and efficiency.
+    Within a single execution, there can be *many* different sampling rates, for intelligent allocation of effort where it's most helpful.
     For instance, slowly-changing signals can be sampled (discretized for output) less frequently than rapidly-changing signals.
     In contrast, discrete-time systems prematurely (and often arbitrarily) commit to sampling rates before knowing and usually a single sampling rate.
     Uniform rates waste computation for some signals while under-sampling others.
