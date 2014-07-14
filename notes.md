@@ -154,3 +154,134 @@ The commonplace expressions of arithmetic and algebra have a certain simplicity 
 It is these properties, and crucially (c), that explains why such expressions are easier to construct and understand. Thus it is (c) that lies behind the evolutionary trend towards "bigger righthand sides" in place of strings of small, explicitly sequenced assignments and jumps. When faced with a new notation that borrows the functional appearance of everyday algebra, it is (c) that gives us a test for whether the notation is genuinely functional or merely masquerading.
 
  </blockquote>
+
+----
+
+# Some thoughts on updating my BayHac 2014 talk for LambdaJam 2014.
+
+Postpone naming "homomorphism".
+Instead, say that I want a *leak-free abstraction*.
+Maybe postpone mentioning abstract algebra.
+
+For semantic models, maybe talk about a "reference implementation", noting that it doesn't have to be executable.
+
+Set up specification as equations, and *solve for* an implementation.
+Given the API and semantic model, what degrees of freedom are there?
+
+*   Representation
+*   Semantic function
+
+Examples:
+
+*   Images
+*   FRP
+*   Linear maps
+*   Automatic differentiation (?)
+
+> mu :: (a -> b) -> (a ~> b)
+> mu f = (f, der f)
+
+> mu id = id
+> mu (g . f) = mu g . mu f
+
+> (g, der g) . (f, der f) = (g . f, der (g . f))
+
+> der (g . f) == (der g . f) * der f
+
+Maybe talk about exact information for modularity.
+Approximations do not compose nicely, because they throw away information prematurely.
+The only safe time to discard information is when composition is complete, and we know exactly what finite subset of the larger information we will be extracting.
+Examples:
+
+*   finite lists, trees, etc, hence non-strict ("lazy") languages;
+*   discrete time & space;
+*   finite precision values (24-bit RGB, floating point numbers)
+
+
+[John Backus on denotation for design]:
+
+From section 9 of John Backus's 1977 Turing Award lecture [*Can Programming Be Liberated from the von Neumann Style? A Functional Style and Its Algebra of Programs*](http://www.thocp.net/biographies/papers/backus_turingaward_lecture.pdf):
+
+ <blockquote>
+
+Denotational semantics and its foundations provide an extremely helpful mathematical understanding of the domain and function spaces implicit in programs. When applied to an applicative language (...), its foundations provide powerful tools for describing the language and for proving properties of programs. When applied to a von Neumann language, on the other hand, it provides a precise semantic description and is helpful in identifying trouble spots in the language. But the complexity of the language is mirrored in the complexity of the description, which is a bewildering collection of productions, domains, functions, and equations that is only slightly more helpful in proving facts about programs than the reference manual of the language, since it is less ambiguous.
+
+...
+
+Thus denotational and axiomatic semantics are descriptive formalisms whose foundations embody elegant and powerful concepts; but using them to describe a von Neumann language can not produce an elegant and powerful language any more than the use of elegant and modern machines to build an Edsel can produce an elegant and modern car.
+
+ </blockquote>
+
+Maybe use right after the slide on "denotative programming", with Landin's quote.
+
+Modular reasoning!
+Simple *denotation*.
+Multiplicative power without multiplicative complexity.
+Dijkstra's "The Humble Programmer".
+
+Give an example of DD before defining it or mentioning "denotation" or "homomorphism".
+
+Use images or behavior.
+Probably images first and then frp.
+
+Goal: manipulate and synthesize imagery.
+
+*   Choose what operations to support.
+*   Implement them correctly and efficiently.
+*   Explain to users.
+
+Question:
+How can we construct a correct implementation?
+
+More fundamental question:
+How can we *know* whether an implementation is correct?
+
+*   Tests:
+    *   Can't show correctness
+    *   Where do we get the tests?
+*   Specification:
+    *   Define correctness precisely and without biasing implementation.
+    *   Could be a simple reference implementation.
+    *   Better: a crisp and compelling *definition* of the domain.
+        *   Needn't be executable.
+        *   Must be precise.
+        *   Simplicity for correct & practical reasoning and insight.
+
+Specification.
+Basic questions:
+
+*   What is an image?
+*   What operations to support?
+
+The specification is a model.
+We're talking about images, not technology.
+Notice temptation to shift to technology.
+
+Brainstorm.
+Criteria:
+
+*   Precise (ferret out bogus assumptions)
+*   Adequate
+*   Simple (relies on precise)
+*   Compositional
+
+Why is "efficiency" missing from this list?
+Because it's not a property of specifications.
+
+Implementation.
+Once we release assumptions/habits like finiteness and discreteness, is what remains even relevant to programming?
+What do we try to implement?
+
+*   An approximation with well-defined distance.
+*   Finite information subset.
+
+Thought question:
+If we start and end with finite & discrete, why go infinite and continuous in the middle?
+
+How to decide on vocabulary?
+Some possibilities:
+
+*   What we want
+*   What we think others want
+*   What the model suggests
+*   Powerful, well-supported abstractions

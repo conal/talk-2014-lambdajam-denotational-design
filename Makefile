@@ -1,4 +1,4 @@
-TARG = bayhac-2014
+TARG = lambdajam-2014
 
 .PRECIOUS: %.tex %.pdf %.web
 
