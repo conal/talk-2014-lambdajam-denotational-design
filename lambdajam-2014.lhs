@@ -60,9 +60,7 @@
 \author{\href{http://conal.net}{Conal Elliott}}
 \institute{\href{http://tabula.com/}{Tabula}}
 % Abbreviate date/venue to fit in infolines space
-%% \date{\href{http://www.meetup.com/haskellhackersathackerdojo/events/132372202/}{October 24, 2013}}
-%% \date{October, 2013}
-\date{May, 2014}
+\date{July, 2014}
 
 \setlength{\itemsep}{2ex}
 \setlength{\parskip}{1ex}
@@ -98,6 +96,169 @@
 \quote{The purpose of abstraction is not to be vague,\\
 but to create a new semantic level\\
 in which one can be absolutely precise.}{Edsger Dijkstra}
+}
+
+
+\framet{Goals}{
+
+\begin{itemize}
+  \begin{itemize}
+  \item Precise, elegant, reusable abstractions
+  \item Correct and efficient implementations
+  \item Clear, simple, and correct documentation
+  \end{itemize}
+}
+
+\framet{Overview}{
+  \begin{itemize}
+  \item Broad outline:
+    \begin{itemize}
+    \item Example, informally
+    \item Principles
+    \item More examples
+    \item Reflection
+    \end{itemize}
+  \item Discussion throughout
+  \item Try it on
+  \end{itemize}
+\end{itemize}
+}
+
+\framet{Example}{
+
+Image synthesis/manipulation
+
+}
+
+\framet{Functionality}{
+
+\pause
+
+\begin{itemize}
+\item Import \& export
+\item Spatial transformation:
+  \begin{itemize}
+  \item Affine: translate, scale, rotate
+  \item Non-affine: swirls, lenses, inversions, \ldots{}
+  \end{itemize}
+\item Cropping
+\item Monochrome
+\item Overlay
+\item Blend
+\item Blur \& sharpen
+\end{itemize}
+
+}
+
+\framet{API first pass}{
+
+> type Image  -- abstract for now
+> 
+> fromBitmap  :: Bitmap -> Image
+> toBitmap    :: Image -> Bitmap
+> over        :: Image -> Image -> Image
+> transform   :: Transform -> Image -> Image
+> crop        :: Region -> Image -> Image
+> monochrome  :: Color -> Image
+
+Also, shapes, gradients, etc.
+
+}
+
+\framet{How to implement?}{
+
+{\centering \pause Wrong first question}
+
+}
+
+\framet{\emph{What} to implement?}{
+\begin{itemize}
+\item What do these operations mean?
+\pitem More centrally: \emph{What does |Image| mean?}
+\end{itemize}
+}
+
+\framet{What is an image?}{
+{\centering \emph{(Brainstorming)}}
+}
+\begin{itemize}
+
+\framet{Specification goals}
+
+\begin{itemize}
+\item precise
+\item adequate
+\item simple
+\end{itemize}
+
+Why these properties?
+
+\end{itemize}
+}
+
+\framet{What is an image?}{
+
+My answer: \pause
+assignment of colors over all of 2D space.
+
+How to make precise?
+
+> type Image a
+
+\pause
+Model:
+
+> meaning :: Image a -> (R2 -> a)
+
+}
+
+\framet{Specifying |Image| operations}{
+
+> meaning (a `over` b) == ??
+> meaning (crop r im) == ??
+> meaning (transform tr im) == ??
+
+}
+
+\framet{Specifying |Image| operations}{
+
+> over :: Image Color -> Image Color -> Image Color
+
+\pause
+
+> meaning (a `over` b)       == \ p -> meaning a p `overC` meaning b p
+> meaning (crop r im)        == \ p -> if meaning r p then meaning im p else clear
+> meaning (transform tr im)  == \ p -> meaning im (meaning tr p)
+
+> overC :: Color -> Color -> Color
+
+Note compositionality of |meaning|.
+
+}
+
+\framet{Compositional semantics}{
+
+Make more explicit:
+
+> meaning (a `over` b)       == meaning a `overS` meaning b
+> meaning (crop r im)        == cropS (meaning r) (meaning im)
+> meaning (transform tr im)  == transformS (meaning tr) (meaning im)
+
+> overS :: (R2 -> Color) -> (R2 -> Color) -> (R2 -> Color)
+> overS f g = \ p -> f p `overC` g p
+>
+> cropS :: (R2 -> Bool) -> (R2 -> a) -> (R2 -> a)
+> cropS f g = \ p -> if f p then g p else clear
+>
+> transformS :: (R2 -> R2) -> (R2 -> a) -> (R2 -> a)
+> transformS = \ p -> f (g p)
+
+}
+
+\framet{Simplify and generalize}{
+}
+
+\framet{}{
 }
 
 \framet{Not even wrong}{\parskip 2ex
@@ -701,16 +862,11 @@ Design methodology for typed, purely functional programming:
 
 \framet{References}{
 \begin{itemize} \itemsep 1.5ex
-\item
-  \href{http://conal.net/papers/type-class-morphisms/}{\emph{Denotational design with type class morphisms}}
-\item
-  \href{http://conal.net/papers/push-pull-frp/}{\emph{Push-pull functional reactive programming}}
-\item
-  \href{http://conal.net/papers/functional-images/}{\emph{Functional Images}}
-\item
-  \href{http://conal.net/blog/tag/http://conal.net/blog/tag/type-class-morphism/}{Posts on type class morphisms}
-\item
-  \href{https://github.com/conal/talk-2014-bayhac-denotational-design}{This talk}
+\item \href{http://conal.net/papers/type-class-morphisms/}{\emph{Denotational design with type class morphisms}}
+\item \href{http://conal.net/papers/push-pull-frp/}{\emph{Push-pull functional reactive programming}}
+\item \href{http://conal.net/papers/functional-images/}{\emph{Functional Images}}
+\item \href{http://conal.net/blog/tag/http://conal.net/blog/tag/type-class-morphism/}{Posts on type class morphisms}
+\item \href{https://github.com/conal/talk-2014-bayhac-denotational-design}{This talk}
 %% \item \href{http://conal.net/blog/posts/early-inspirations-and-new-directions-in-functional-reactive-programming/}{\emph{Early inspirations and new directions in functional reactive programming}}
 
 \end{itemize}
