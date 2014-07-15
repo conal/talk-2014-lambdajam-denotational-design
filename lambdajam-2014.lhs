@@ -100,17 +100,17 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
 
 
 \framet{Goals}{
-\begin{itemize}
+\begin{itemize}\parskip 4ex
 \item Precise, elegant, reusable abstractions
 \item Correct and efficient implementations
-\item Clear, simple, and correct documentation
+\item Clear, simple, and accurate documentation
 \end{itemize}
 }
 
 \framet{Overview}{
-\begin{itemize}
+\begin{itemize}\parskip 2ex
 \item Broad outline:
-  \begin{itemize}
+  \begin{itemize}\parskip 2ex
   \item Example, informally
   \item Principles
   \item More examples
@@ -121,20 +121,17 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
 \end{itemize}
 }
 
-\framet{Example}{
-
-Image synthesis/manipulation
-
+\framet{Example: image synthesis/manipulation}{
 }
 
 \framet{Functionality}{
 
 \pause
 
-\begin{itemize}
+\begin{itemize}\parskip 1.25ex
 \item Import \& export
 \item Spatial transformation:
-  \begin{itemize}
+  \begin{itemize}\parskip 1.2ex
   \item Affine: translate, scale, rotate
   \item Non-affine: swirls, lenses, inversions, \ldots{}
   \end{itemize}
@@ -149,8 +146,10 @@ Image synthesis/manipulation
 
 \framet{API first pass}{
 
+\pause
+
 > type Image  -- abstract for now
-> 
+
 > fromBitmap  :: Bitmap -> Image
 > toBitmap    :: Image -> Bitmap
 > over        :: Image -> Image -> Image
@@ -158,34 +157,41 @@ Image synthesis/manipulation
 > crop        :: Region -> Image -> Image
 > monochrome  :: Color -> Image
 
+\vspace{1ex}
 Also, shapes, gradients, etc.
 
 }
 
 \framet{How to implement?}{
-
-{\centering \pause Wrong first question}
-
+\pause
+\begin{center}
+\emph{wrong first question}
+\end{center}
 }
 
 \framet{\emph{What} to implement?}{
-\begin{itemize}
+\begin{itemize}\parskip4ex
 \item What do these operations mean?
 \pitem More centrally: \emph{What does |Image| mean?}
 \end{itemize}
 }
 
 \framet{What is an image?}{
-{\centering \emph{(Brainstorming)}}
+\begin{center}
+\emph{(brainstorming)}
+\end{center}
 }
 
 \framet{Specification goals}{
 
-\begin{itemize}
+\begin{itemize}\parskip3ex
 \item precise
 \item adequate
 \item simple
 \end{itemize}
+
+\pause
+\vspace{4ex}
 
 Why these properties?
 }
@@ -215,23 +221,24 @@ What about regions?
 \framet{Specifying |Image| operations}{
 
 > meaning (a `over` b)       == ??
+>
 > meaning (crop r im)        == ??
+>
 > meaning (monochrome c)     == ??
+>
 > meaning (transform tr im)  == ??
 
 }
 
 \framet{Specifying |Image| operations}{
 
-> over :: Image -> Image -> Image
-
-\pause
-
 > meaning (a `over` b)       == \ p -> meaning a p `overC` meaning b p
 > meaning (crop r im)        == \ p -> if meaning r p then meaning im p else clear
 > meaning (monochrome c)     == \ p -> c
 
 > overC :: Color -> Color -> Color
+
+\pause
 
 Note compositionality of |meaning|.
 
@@ -246,7 +253,7 @@ Make more explicit:
 
 > overS :: (Loc -> Color) -> (Loc -> Color) -> (Loc -> Color)
 > overS f g = \ p -> f p `overC` g p
->
+> SPACE
 > cropS :: (Loc -> Bool) -> (Loc -> Color) -> (Loc -> Color)
 > cropS f g = \ p -> if f p then g p else clear
 
@@ -260,23 +267,29 @@ Make more explicit:
   Other pointwise combinations (lerp, threshold)?
 \end{itemize}
 
+\pause
 Generalize:
 
 > type Image a
-> 
 > type ImageC  = Image Color
 > type Region  = Image Bool
 
-|transform|, |monochrome|, |over|, and |crop| get more general:
+Now |transform|, |monochrome|, |over|, and |crop| get more general:
+
+}
+
+\framet{Simplify and generalize}{
 
 > transform  :: Transform -> Image a -> Image a
 > constIm    :: a -> Image a
 > cond       :: Image Bool -> Image a -> Image a -> Image a
 
-> lift2  :: (a -> b -> c) -> Image a -> Image b -> Image c
-> lift3  :: (a -> b -> c -> d) -> Image a -> Image b -> Image c -> Image d
+> lift2  ::  (a -> b -> c) -> (Image a -> Image b -> Image c)
+> lift3  ::  (a -> b -> c -> d)
+>        ->  (Image a -> Image b -> Image c -> Image d)
 > ...
 
+\pause
 Specializing,
 
 > monochrome  = constIm
@@ -292,24 +305,26 @@ Specializing,
 
 > meaning (transform tr im)  == ??
 
+\vspace{20ex}
+
 }
 \framet{Spatial transformation}{
 
 > meaning :: Transform -> (Loc -> Loc)
 
-> meaning (transform tr im)  == \ p -> meaning im (meaning tr p)
-
-\pause
-
 > meaning (transform tr im)  == transformS (meaning tr) (meaning im)
->
+
+where \pause
+
 > transformS :: (Loc -> Loc) -> (Loc -> Color) -> (Loc -> Color)
 > transformS = \ p -> f (g p)
 
 Subtle implications.
 
+\pause
 What is |Loc|?
-My answer: continuous infinite 2D space:
+\pause
+My answer: continuous infinite 2D space.
 
 > type Loc = R2
 
