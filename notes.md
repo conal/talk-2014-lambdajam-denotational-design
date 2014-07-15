@@ -20,7 +20,7 @@ Some thoughts on my denotational design talk from last week:
 
 Most programming puts how before the what.
 For me, the essence of functional programming is as a clear and precise illuminating language with which explore the what.
-Insert Edster Dykstras quotes about computer science and telescopes.
+Insert Dykstra quote about computer science and telescopes.
 However, even functional programming can be used in a way that focuses on how and neglects what.
 How can we be more clear about what?
 I don't think the answer is to be found in software engineering, which places software as a primary artifact.
@@ -52,9 +52,8 @@ Computers were designed by mathematicians to solve mathematical problems.
 Over time, the programmers have become the programmees.
 ("We shape our tools and afterwards our tools shape us." - Marshall McLuhan)
 For the most part, we have become so enchanted by our tools that we have mostly abandoned the original enterprise.
-Insert quote about tools shaping us.
 
-If I have a clear understanding of a problem I want to solve, or a domain of thought I want to explore, then I can try to use the machine has a telescope for microscope through which to solve and examine my questions of interest.
+If I have a clear understanding of a problem I want to solve, or a domain of thought I want to explore, then I can try to use the machine as a telescope or microscope through which to examine my questions of interest.
 
 Talk about popularity and dilution.
 How can I broach this subject in a way that is clear and preferably not too offensive for people to listen to?
@@ -196,7 +195,6 @@ Examples:
 *   finite lists, trees, etc, hence non-strict ("lazy") languages;
 *   discrete time & space;
 *   finite precision values (24-bit RGB, floating point numbers)
-
 
 [John Backus on denotation for design]:
 

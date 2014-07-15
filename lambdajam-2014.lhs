@@ -100,27 +100,24 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
 
 
 \framet{Goals}{
-
 \begin{itemize}
-  \begin{itemize}
-  \item Precise, elegant, reusable abstractions
-  \item Correct and efficient implementations
-  \item Clear, simple, and correct documentation
-  \end{itemize}
+\item Precise, elegant, reusable abstractions
+\item Correct and efficient implementations
+\item Clear, simple, and correct documentation
+\end{itemize}
 }
 
 \framet{Overview}{
+\begin{itemize}
+\item Broad outline:
   \begin{itemize}
-  \item Broad outline:
-    \begin{itemize}
-    \item Example, informally
-    \item Principles
-    \item More examples
-    \item Reflection
-    \end{itemize}
-  \item Discussion throughout
-  \item Try it on
+  \item Example, informally
+  \item Principles
+  \item More examples
+  \item Reflection
   \end{itemize}
+\item Discussion throughout
+\item Try it on
 \end{itemize}
 }
 
@@ -181,9 +178,8 @@ Also, shapes, gradients, etc.
 \framet{What is an image?}{
 {\centering \emph{(Brainstorming)}}
 }
-\begin{itemize}
 
-\framet{Specification goals}
+\framet{Specification goals}{
 
 \begin{itemize}
 \item precise
@@ -192,43 +188,48 @@ Also, shapes, gradients, etc.
 \end{itemize}
 
 Why these properties?
-
-\end{itemize}
 }
 
 \framet{What is an image?}{
 
 My answer: \pause
-assignment of colors over all of 2D space.
+assignment of colors to 2D locations.
 
 How to make precise?
 
-> type Image a
+> type Image
 
 \pause
 Model:
 
-> meaning :: Image a -> (R2 -> a)
+> meaning :: Image -> (Loc -> Color)
+
+\pause
+What about regions?
+\pause
+
+> meaning :: Region -> (Loc -> Bool)
 
 }
 
 \framet{Specifying |Image| operations}{
 
-> meaning (a `over` b) == ??
-> meaning (crop r im) == ??
-> meaning (transform tr im) == ??
+> meaning (a `over` b)       == ??
+> meaning (crop r im)        == ??
+> meaning (monochrome c)     == ??
+> meaning (transform tr im)  == ??
 
 }
 
 \framet{Specifying |Image| operations}{
 
-> over :: Image Color -> Image Color -> Image Color
+> over :: Image -> Image -> Image
 
 \pause
 
 > meaning (a `over` b)       == \ p -> meaning a p `overC` meaning b p
 > meaning (crop r im)        == \ p -> if meaning r p then meaning im p else clear
-> meaning (transform tr im)  == \ p -> meaning im (meaning tr p)
+> meaning (monochrome c)     == \ p -> c
 
 > overC :: Color -> Color -> Color
 
@@ -242,23 +243,102 @@ Make more explicit:
 
 > meaning (a `over` b)       == meaning a `overS` meaning b
 > meaning (crop r im)        == cropS (meaning r) (meaning im)
-> meaning (transform tr im)  == transformS (meaning tr) (meaning im)
 
-> overS :: (R2 -> Color) -> (R2 -> Color) -> (R2 -> Color)
+> overS :: (Loc -> Color) -> (Loc -> Color) -> (Loc -> Color)
 > overS f g = \ p -> f p `overC` g p
 >
-> cropS :: (R2 -> Bool) -> (R2 -> a) -> (R2 -> a)
+> cropS :: (Loc -> Bool) -> (Loc -> Color) -> (Loc -> Color)
 > cropS f g = \ p -> if f p then g p else clear
->
-> transformS :: (R2 -> R2) -> (R2 -> a) -> (R2 -> a)
-> transformS = \ p -> f (g p)
 
 }
 
 \framet{Simplify and generalize}{
+\begin{itemize}
+\item
+  What about transforming \emph{regions}?
+\item
+  Other pointwise combinations (lerp, threshold)?
+\end{itemize}
+
+Generalize:
+
+> type Image a
+> 
+> type ImageC  = Image Color
+> type Region  = Image Bool
+
+|transform|, |monochrome|, |over|, and |crop| get more general:
+
+> transform  :: Transform -> Image a -> Image a
+> constIm    :: a -> Image a
+> cond       :: Image Bool -> Image a -> Image a -> Image a
+
+> lift2  :: (a -> b -> c) -> Image a -> Image b -> Image c
+> lift3  :: (a -> b -> c -> d) -> Image a -> Image b -> Image c -> Image d
+> ...
+
+Specializing,
+
+> monochrome  = constIm
+> over        = lift2 overC
+> cond        = lift3 ifThenElse
+> crop r im   = cond r im emptyIm
+
 }
 
-\framet{}{
+\framet{Spatial transformation}{
+
+> meaning :: Transform -> ??
+
+> meaning (transform tr im)  == ??
+
+}
+\framet{Spatial transformation}{
+
+> meaning :: Transform -> (Loc -> Loc)
+
+> meaning (transform tr im)  == \ p -> meaning im (meaning tr p)
+
+\pause
+
+> meaning (transform tr im)  == transformS (meaning tr) (meaning im)
+>
+> transformS :: (Loc -> Loc) -> (Loc -> Color) -> (Loc -> Color)
+> transformS = \ p -> f (g p)
+
+Subtle implications.
+
+What is |Loc|?
+My answer: continuous infinite 2D space:
+
+> type Loc = R2
+
+}
+
+\framet{Why continuous (vs discrete) space?}{
+\begin{itemize}
+\item
+  Modularity/composability:
+  \begin{itemize}
+  \item
+    Fewer assumptions, more uses. Resolution-independence. (Don't assume
+    sampling frequency.)
+  \item
+    More info available for extraction.
+  \item
+    Same benefits as non-strict functional programming.
+    See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
+  \item
+    Approximations/prunings compose badly, so postpone.
+  \end{itemize}
+\item
+  Strengthen induction hypothesis
+\item
+  Simpler (while precise)
+\end{itemize}
+}
+
+\framet{Part 2}{
 }
 
 \framet{Not even wrong}{\parskip 2ex
