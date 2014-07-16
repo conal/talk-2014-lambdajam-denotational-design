@@ -101,9 +101,9 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
 
 \framet{Goals}{
 \begin{itemize}\parskip 4ex
-\item Precise, elegant, reusable abstractions
-\item Correct and efficient implementations
-\item Clear, simple, and accurate documentation
+\item \emph{Abstractions}: precise, elegant, reusable
+\item \emph{Implementations}: correct, efficient, maintainable
+\item \emph{Documentation}: clear, simple, accurate
 \end{itemize}
 }
 
@@ -117,17 +117,19 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
   \item Reflection
   \end{itemize}
 \item Discussion throughout
-\item Try it on
+\item Try it on.
 \end{itemize}
 }
 
 \framet{Example: image synthesis/manipulation}{
+\begin{itemize}\parskip4ex
+\item How to start?
+\item What is success?
+\end{itemize}
 }
 
 \framet{Functionality}{
-
 \pause
-
 \begin{itemize}\parskip 1.25ex
 \item Import \& export
 \item Spatial transformation:
@@ -140,25 +142,25 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
 \item Overlay
 \item Blend
 \item Blur \& sharpen
+\item Geometry, gradients, \ldots.
 \end{itemize}
-
 }
 
 \framet{API first pass}{
-
 \pause
 
-> type Image  -- abstract for now
+> type Image
 
-> fromBitmap  :: Bitmap -> Image
-> toBitmap    :: Image -> Bitmap
 > over        :: Image -> Image -> Image
 > transform   :: Transform -> Image -> Image
 > crop        :: Region -> Image -> Image
 > monochrome  :: Color -> Image
+> -- shapes, gradients, etc.
 
-\vspace{1ex}
-Also, shapes, gradients, etc.
+{}
+
+> fromBitmap  :: Bitmap -> Image
+> toBitmap    :: Image -> Bitmap
 
 }
 
@@ -171,8 +173,8 @@ Also, shapes, gradients, etc.
 
 \framet{\emph{What} to implement?}{
 \begin{itemize}\parskip4ex
-\item What do these operations mean?
-\pitem More centrally: \emph{What does |Image| mean?}
+\pitem What do these operations mean?
+\pitem More centrally: What do the \emph{types} mean?
 \end{itemize}
 }
 
@@ -185,9 +187,9 @@ Also, shapes, gradients, etc.
 \framet{Specification goals}{
 
 \begin{itemize}\parskip3ex
-\item precise
-\item adequate
-\item simple
+\item Precise
+\item Adequate
+\item Simple
 \end{itemize}
 
 \pause
@@ -198,10 +200,11 @@ Why these properties?
 
 \framet{What is an image?}{
 
-My answer: \pause
+\pause
+My answer:
 assignment of colors to 2D locations.
 
-How to make precise?
+\pause How to make precise?
 
 > type Image
 
@@ -220,21 +223,27 @@ What about regions?
 
 \framet{Specifying |Image| operations}{
 
-> meaning (a `over` b)       == ??
+> meaning (over top bot)     == ...
 >
-> meaning (crop r im)        == ??
+> meaning (crop reg im)      == ...
 >
-> meaning (monochrome c)     == ??
+> meaning (monochrome c)     == ...
 >
-> meaning (transform tr im)  == ??
+> meaning (transform tr im)  == ...
+
+\vspace{13ex}
 
 }
 
 \framet{Specifying |Image| operations}{
 
-> meaning (a `over` b)       == \ p -> meaning a p `overC` meaning b p
-> meaning (crop r im)        == \ p -> if meaning r p then meaning im p else clear
+> meaning (over top bot)     == \ p -> overC (meaning top p) (meaning bot p)
+>
+> meaning (crop reg im)      == \ p -> if meaning reg p then meaning im p else clear
+>
 > meaning (monochrome c)     == \ p -> c
+>
+> meaning (transform tr im)  == -- coming up
 
 > overC :: Color -> Color -> Color
 
@@ -248,18 +257,18 @@ Note compositionality of |meaning|.
 
 Make more explicit:
 
-> meaning (a `over` b)       == meaning a `overS` meaning b
-> meaning (crop r im)        == cropS (meaning r) (meaning im)
+> meaning (over top bot)  == overS (meaning top) (meaning bot)
+> meaning (crop reg im)   == cropS (meaning reg) (meaning im)
 
 > overS :: (Loc -> Color) -> (Loc -> Color) -> (Loc -> Color)
-> overS f g = \ p -> f p `overC` g p
+> overS f g = \ p -> overC (f p) (g p)
 > SPACE
 > cropS :: (Loc -> Bool) -> (Loc -> Color) -> (Loc -> Color)
 > cropS f g = \ p -> if f p then g p else clear
 
 }
 
-\framet{Simplify and generalize}{
+\framet{Generalize and simplify}{\parskip3ex
 \begin{itemize}
 \item
   What about transforming \emph{regions}?
@@ -274,15 +283,17 @@ Generalize:
 > type ImageC  = Image Color
 > type Region  = Image Bool
 
-Now |transform|, |monochrome|, |over|, and |crop| get more general:
+Now |transform|, |monochrome|, |over|, and |crop| get more general.
 
 }
 
-\framet{Simplify and generalize}{
+\framet{Generalize and simplify}{
 
 > transform  :: Transform -> Image a -> Image a
 > constIm    :: a -> Image a
 > cond       :: Image Bool -> Image a -> Image a -> Image a
+
+\pause\vspace{-4ex}
 
 > lift2  ::  (a -> b -> c) -> (Image a -> Image b -> Image c)
 > lift3  ::  (a -> b -> c -> d)
@@ -305,52 +316,68 @@ Specializing,
 
 > meaning (transform tr im)  == ??
 
-\vspace{20ex}
+\vspace{28.55ex}
 
 }
+
+\framet{Spatial transformation}{
+
+> meaning :: Transform -> ??
+
+> meaning (transform tr im) == transformS (meaning tr) (meaning im)
+
+where
+
+> transformS :: ?? -> (Loc -> Color) -> (Loc -> Color)
+
+\vspace{17ex}
+
+}
+
 \framet{Spatial transformation}{
 
 > meaning :: Transform -> (Loc -> Loc)
 
 > meaning (transform tr im)  == transformS (meaning tr) (meaning im)
 
-where \pause
+where
 
 > transformS :: (Loc -> Loc) -> (Loc -> Color) -> (Loc -> Color)
-> transformS = \ p -> f (g p)
+
+\pause\vspace{-8ex}
+
+> transformS h f = \ p -> f (h p)
 
 Subtle implications.
 
 \pause
 What is |Loc|?
 \pause
-My answer: continuous infinite 2D space.
+My answer: continuous, infinite 2D space.
 
 > type Loc = R2
 
 }
 
 \framet{Why continuous (vs discrete) space?}{
-\begin{itemize}
-\item
-  Modularity/composability:
-  \begin{itemize}
-  \item
-    Fewer assumptions, more uses. Resolution-independence. (Don't assume
-    sampling frequency.)
-  \item
-    More info available for extraction.
-  \item
-    Same benefits as non-strict functional programming.
-    See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
-  \item
-    Approximations/prunings compose badly, so postpone.
+\begin{itemize}\parskip1.5ex
+\pitem Flexible transformation with simple \& precise semantics
+\pitem Efficiency (adapative)
+\pitem Quality/accuracy
+\pitem Modularity/composability\pause:
+  \begin{itemize}\parskip1.2ex
+  \item Fewer assumptions, more uses (resolution-independence).
+  \item More info available for extraction.
+  \item Same benefits as non-strict functional programming.\\
+        See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
   \end{itemize}
-\item
-  Strengthen induction hypothesis
-\item
-  Simpler (while precise)
 \end{itemize}
+
+\pause
+Approximations/prunings \emph{compose} badly, so postpone.
+
+%% \item Strengthen induction hypothesis
+
 }
 
 \framet{Part 2}{
