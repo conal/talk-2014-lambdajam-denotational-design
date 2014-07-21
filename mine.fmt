@@ -22,6 +22,8 @@
 %% hack: add missing space, e.g., before "{" in data type decl
 %format SPACE = "\ {}"
 
+%format PAUSE = "\pause "
+
 %format BACK = "{\Back}"
 %format BACKQ a = "{\Back}"
 %format PBACK = "\pause\Back"
@@ -81,5 +83,14 @@
 %format <*> = "\mathbin{<\!\!\!*\!\!\!>}"
 
 %format :->: = "\twoheadrightarrow"
-
 %format <== = "\Leftarrow"
+
+%format liftA2 = "\Varid{liftA_2}"
+%format liftA3 = "\Varid{liftA_3}"
+%format liftA4 = "\Varid{liftA_4}"
+
+%format lift0 = "\Varid{lift_0}"
+%format lift1 = "\Varid{lift_1}"
+%format lift2 = "\Varid{lift_2}"
+%format lift3 = "\Varid{lift_3}"
+%format lift4 = "\Varid{lift_4}"
