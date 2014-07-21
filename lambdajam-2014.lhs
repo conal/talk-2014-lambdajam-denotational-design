@@ -60,7 +60,8 @@
 \author{\href{http://conal.net}{Conal Elliott}}
 \institute{\href{http://tabula.com/}{Tabula}}
 % Abbreviate date/venue to fit in infolines space
-\date{July, 2014}
+% \date{July, 2014}
+\date{\emph{Draft of \today}}
 
 \setlength{\itemsep}{2ex}
 \setlength{\parskip}{1ex}
@@ -116,8 +117,8 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
   \item More examples
   \item Reflection
   \end{itemize}
-\item Discussion throughout
-\item Try it on.
+\pitem Discussion throughout
+\pitem Try it on.
 \end{itemize}
 }
 
@@ -290,23 +291,22 @@ Now |transform|, |monochrome|, |over|, and |crop| get more general.
 \framet{Generalize and simplify}{
 
 > transform  :: Transform -> Image a -> Image a
-> constIm    :: a -> Image a
 > cond       :: Image Bool -> Image a -> Image a -> Image a
 
 \pause\vspace{-4ex}
 
+> lift0  ::  a -> Image a
+> lift1  ::  (a -> b) -> (Image a -> Image b)
 > lift2  ::  (a -> b -> c) -> (Image a -> Image b -> Image c)
-> lift3  ::  (a -> b -> c -> d)
->        ->  (Image a -> Image b -> Image c -> Image d)
 > ...
 
 \pause
 Specializing,
 
-> monochrome  = constIm
+> monochrome  = lift0
 > over        = lift2 overC
-> cond        = lift3 ifThenElse
 > crop r im   = cond r im emptyIm
+> cond        = lift3 ifThenElse
 
 }
 
@@ -359,16 +359,16 @@ My answer: continuous, infinite 2D space.
 
 }
 
-\framet{Why continuous (vs discrete) space?}{
+\framet{Why continuous \& infinite (vs discrete/finite) space?}{
 \begin{itemize}\parskip1.5ex
-\pitem Flexible transformation with simple \& precise semantics
+\pitem Transformation flexibility with simple \& precise semantics
 \pitem Efficiency (adapative)
 \pitem Quality/accuracy
 \pitem Modularity/composability\pause:
   \begin{itemize}\parskip1.2ex
   \item Fewer assumptions, more uses (resolution-independence).
   \item More info available for extraction.
-  \item Same benefits as non-strict functional programming.\\
+  \item Same benefits as pure, non-strict functional programming.\\
         See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
   \end{itemize}
 \end{itemize}
@@ -377,6 +377,138 @@ My answer: continuous, infinite 2D space.
 Approximations/prunings \emph{compose} badly, so postpone.
 
 %% \item Strengthen induction hypothesis
+
+}
+
+\framet{Using standard vocabulary}{
+\pause
+\begin{itemize}\parskip1.3ex
+\item We've created a domain-specific vocabulary.
+\item Can we reuse standard vocabularies instead?
+\item Why would we want to?
+  \pause
+  \begin{itemize}\parskip1.5ex
+  \item User knowledge.
+  \item Ecosystem support (multiplicative power).
+  \item Laws as sanity check.
+  \item Tao check.
+  \item Specification and laws for free, as we'll see.
+  \end{itemize}
+\pitem In Haskell, standard type classes.
+\end{itemize}
+}
+
+\framet{Monoid}{
+
+Interface:
+
+> class Monoid m where
+>   mempty  :: m            -- ``mempty''
+>   (<>)    :: m -> m -> m  -- ``mappend''
+
+Laws:
+
+> a <> mempty == a
+> mempty <> b == b
+> a <> (b <> c) == (a <> b) <> c
+
+\pause Why do laws |matter|?
+\pause Compositional (modular) reasoning.
+
+\pause What monoids have we seen today?
+}
+
+\framet{Image monoid}{
+
+\pause
+
+> instance Monoid ImageC where
+>   mempty  = lift0 clear
+>   (<>)    = over
+
+\pause
+Is there a more general form on |Image a|?
+\pause
+
+> instance Monoid a => Monoid (Image a) where
+>   mempty  = lift0 mempty
+>   (<>)    = lift2 (<>)
+
+\pause
+Do these instances satisfy the |Monoid| laws?
+}
+
+\framet{|Functor|}{
+
+> class Functor f where
+>   (<$>) :: (a -> b) -> (f a -> f b)
+
+{}
+
+\pause
+For images?
+
+\vspace{2ex}
+
+\pause
+
+> instance Functor Image where
+>   (<$>) = lift1
+
+}
+
+\framet{|Applicative|}{
+
+> class Functor f => Applicative f where
+>   pure   :: a -> f a
+>   (<*>)  :: f (a -> b) -> f a -> f b
+
+\pause
+For images?
+\pause
+
+> instance Applicative Image where
+>   pure   = lift0
+>   (<*>)  = lift2 ($)
+
+From |Applicative|,
+
+< liftA2 f p q    = f <$> p <*> q
+< liftA3 f p q r  = f <$> p <*> q <*> r
+< -- etc
+
+}
+
+\framet{Instance semantics}{
+
+|Monoid|:
+
+> mu mempty        == \ p -> mempty
+> mu (top <> bot)  == \ p -> mu top p <> mu bot p
+
+\pause
+|Functor|:
+
+> mu (f <$> im)  == \ p -> f (im p)
+>                == f . im
+
+\pause
+|Applicative|:
+
+> mu (pure a)     == \ p -> a
+> mu (fs <*> xs)  == \ p -> (fs p) (xs p)
+
+}
+
+\framet{|Monad| and |Comonad|}{
+
+> class Monad f where
+>   return  :: a -> f a
+>   join    :: f (f a) -> f a
+
+> class Functor f => Comonad f where
+>   coreturn  :: f a -> a
+>   cojoin    :: f a -> f (f a)
 
 }
 
@@ -395,7 +527,7 @@ Conventional programming is precise only about how, not what.
 
 }
 
-\framet{Library design}{ \parskip 3ex
+\framet{Library design}{\parskip3ex
 
 Goal: precise, elegant, reusable abstractions.
 
@@ -835,12 +967,12 @@ What standard algebraic abstractions does the model inhabit?
 \framet{Functor}{
 
 > instance Functor ((->) t) where
->   fmap f h = f . h
+>   f <$> h = f . h
 
 Morphism:
 
->     meaning (fmap f b)
-> ==  fmap f (meaning b)
+>     meaning (f <$> b)
+> ==  f <$> meaning b
 > SPACE
 > ==  f . meaning b
 
@@ -888,7 +1020,7 @@ Morphism:
 \fbox{\begin{minipage}[c]{0.48\textwidth}
 
 >     meaning (join bb)
-> ==  join (fmap meaning (meaning bb))
+> ==  join (meaning <$> meaning bb)
 > SPACE
 > ==  join (meaning . meaning bb)
 > ==  \ t -> (meaning . meaning bb) t t
