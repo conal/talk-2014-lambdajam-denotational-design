@@ -108,6 +108,46 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
 \end{itemize}
 }
 
+\framet{Not even wrong}{\parskip 2ex
+
+Conventional programming is precise only about how, not what.
+
+\pquote{It is not only not right, it is not even wrong.}{Wolfgang Pauli}
+
+\pquote{Everything is vague to a degree you do not realize till you have tried to make it precise.}{Bertrand Russell}
+
+\pquote{What we wish, that we readily believe.}{Demosthenes}
+
+}
+
+\framet{Denotative programming}{\parskip 4ex
+Peter Landin recommended ``denotative'' to replace ill-defined ``functional'' and ``declarative''.
+
+Properties:\vspace{-4ex}
+\begin{itemize}
+  \item Nested expression structure.
+  \item Each expression \emph{denotes} something,
+  \item depending only on denotations of subexpressions.
+\end{itemize}
+
+``\ldots gives us a test for whether the notation is genuinely functional or merely masquerading.''
+(\href{http://www.scribd.com/doc/12878059/The-Next-700-Programming-Languages}{\emph{The
+Next 700 Programming Languages}})
+
+}
+
+\framet{Denotational design}{ % \parskip 2ex
+Design methodology for ``genuinely functional'' programming:
+\begin{itemize}\itemsep 1.5ex
+  \item Precise, simple, and compelling specification.
+  \item Informs \emph{use} and \emph{implementation} without entangling them.
+  \item Standard algebraic abstractions.
+  \item Free of abstraction leaks.
+  \item Laws for free.
+  \item Principled construction of correct implementation.
+\end{itemize}
+}
+
 \framet{Overview}{
 \begin{itemize}\parskip 2ex
 \item Broad outline:
@@ -377,6 +417,13 @@ My answer: continuous, infinite 2D space.
 Approximations/prunings \emph{compose} badly, so postpone.
 
 %% \item Strengthen induction hypothesis
+}
+
+\framet{Examples}{
+
+\begin{center}
+\href{http://conal.net/Pan/Gallery/}{Pan gallery}
+\end{center}
 
 }
 
@@ -434,6 +481,8 @@ Is there a more general form on |Image a|?
 >   mempty  = lift0 mempty
 >   (<>)    = lift2 (<>)
 
+\vspace{-1ex}
+
 \pause
 Do these instances satisfy the |Monoid| laws?
 }
@@ -455,6 +504,10 @@ For images?
 > instance Functor Image where
 >   (<$>) = lift1
 
+{}
+
+\pause Laws?
+
 }
 
 \framet{|Applicative|}{
@@ -473,14 +526,17 @@ For images?
 
 From |Applicative|,
 
-< liftA2 f p q    = f <$> p <*> q
-< liftA3 f p q r  = f <$> p <*> q <*> r
-< -- etc
+> liftA2 f p q    = f <$> p <*> q
+> liftA3 f p q r  = f <$> p <*> q <*> r
+> -- etc
+
+\pause Laws?
 
 }
 
 \framet{Instance semantics}{
 
+\pause
 |Monoid|:
 
 > mu mempty        == \ p -> mempty
@@ -495,8 +551,8 @@ From |Applicative|,
 \pause
 |Applicative|:
 
-> mu (pure a)     == \ p -> a
-> mu (fs <*> xs)  == \ p -> (fs p) (xs p)
+> mu (pure a)       == \ p -> a
+> mu (imf <*> imx)  == \ p -> (imf p) (imx p)
 
 }
 
@@ -512,72 +568,96 @@ From |Applicative|,
 
 }
 
-\framet{Part 2}{
-}
+\framet{Monoid specification, revisited}{
 
-\framet{Not even wrong}{\parskip 2ex
+Image monoid specification:
+\vspace{-1.5ex}
 
-Conventional programming is precise only about how, not what.
-
-\pquote{It is not only not right, it is not even wrong.}{Wolfgang Pauli}
-
-\pquote{Everything is vague to a degree you do not realize till you have tried to make it precise.}{Bertrand Russell}
-
-\pquote{What we wish, that we readily believe.}{Demosthenes}
-
-}
-
-\framet{Library design}{\parskip3ex
-
-Goal: precise, elegant, reusable abstractions.
+> mu mempty        == \ p -> mempty
+> mu (top <> bot)  == \ p -> mu top p <> mu bot p
 
 \pause
-Where have such things been developed?
-\pause
-\emph{Math --- abstract algebra.}
+Instance for the semantic model:
+\vspace{-1.5ex}
+
+> instance Monoid v => Monoid (u -> v) where
+>   mempty  = \ u -> mempty
+>   f <> g  = \ u -> f u <> g u
 
 \pause
-Non-leaky abstraction |==| \emph{homomorphism}.
+Refactoring,
+\vspace{-1.5ex}
 
-\vspace{3ex}
+> mu mempty        == mempty
+> mu (top <> bot)  == mu top <> mu bot
+
 \pause
-
-In Haskell,
-\pause
-\vspace{-2ex}
-\begin{itemize}
-  \item Standard type classes
-  \item Laws
-  \item Semantic type class morphisms (TCMs)
-\end{itemize}
-}
-
-\framet{Denotative programming}{\parskip 4ex
-Peter Landin recommended ``denotative'' to replace ill-defined ``functional'' and ``declarative''.
-
-Properties:\vspace{-4ex}
-\begin{itemize}
-  \item Nested expression structure.
-  \item Each expression \emph{denotes} something,
-  \item depending only on denotations of subexpressions.
-\end{itemize}
-
-``\ldots gives us a test for whether the notation is genuinely functional or merely masquerading.''
-(\href{http://www.scribd.com/doc/12878059/The-Next-700-Programming-Languages}{\emph{The
-Next 700 Programming Languages}})
+So |mu| \emph{distributes} over monoid operations\pause, i.e., a monoid homomorphism.
 
 }
 
-\framet{Denotational design}{ % \parskip 2ex
-Design methodology for ``genuinely functional'' programming:
-\begin{itemize}\itemsep 1.5ex
-  \item Precise, simple, and compelling specification.
-  \item Informs \emph{use} and \emph{implementation} without entangling them.
-  \item Standard algebraic abstractions.
-  \item Free of abstraction leaks.
-  \item Laws for free.
-  \item Principled construction of correct implementation.
-\end{itemize}
+\framet{Functor specification, revisited}{
+
+Functor specification:
+\vspace{-1.5ex}
+
+> mu (f <$> im) == f . mu im
+
+\pause
+Instance for the semantic model:
+\vspace{-1.5ex}
+
+> instance Functor ((->) u) where
+>  f <$> h = f . h
+
+Refactoring,
+\vspace{-1.5ex}
+
+> mu (f <$> im) == f <$> mu im
+
+So |mu| is a \emph{functor} homomorphism.
+}
+
+\framet{Applicative specification, revisited}{
+
+Applicative specification:
+\vspace{-1.5ex}
+
+> mu (pure a)       == \ p -> a
+> mu (imf <*> imx)  == \ p -> (mu imf p) (mu imx p)
+
+\pause
+Instance for the semantic model:
+\vspace{-1.5ex}
+
+> instance Applicative ((->) u) where
+>   pure a     = \ u -> a
+>   fs <*> xs  = \ u -> (fs u) (xs u)
+
+Refactoring,
+\vspace{-1.5ex}
+
+> mu (pure a)       == pure a
+> mu (imf <*> imx)  == mu imf <*> mu imx
+
+So |mu| is an \emph{applicative} homomorphism.
+
+}
+
+\framet{Specifications for free}{\parskip3ex
+
+Semantic type class morphism (TCM) principle:
+\begin{quotation}
+\emph{The instance's meaning follows the meaning's instance.}
+\end{quotation}
+
+That is, the type acts like its meaning.
+
+Every TCM failure is an abstraction leak.
+
+Strong design principle.
+
+Class laws necessarily hold, as we'll see.
 }
 
 \framet{Example -- linear transformations}{
@@ -1048,27 +1128,26 @@ Suggest a relative time model.
 
 }
 
-\framet{Image manipulation}{
-
-\pause
-Central type:
-
-> type Image a
-
-\pause
-Model:
-
-> meaning :: Image a -> (R2 -> a)
-
-\pause
-As with behaviors,
-\begin{itemize}
-  \item Suggests API and semantics (via morphisms).
-  \item Classes: |Monoid|, |Functor|, |Applicative|, |Monad|, |Comonad|.
+\framet{Why continuous \& infinite (vs discrete/finite) time?}{
+\begin{itemize}\parskip0.3ex
+\item Transformation flexibility with simple \& precise semantics
+\item Efficiency (adapative)
+\item Quality/accuracy
+\item Modularity/composability:
+  \begin{itemize}
+  \item Fewer assumptions, more uses (resolution-independence).
+  \item More info available for extraction.
+  \item Same benefits as pure, non-strict functional programming.\\
+        See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
+  \end{itemize}
+\pitem Integration and differentiation: natural, accurate, efficient.
+\pitem Reconcile differing input sampling rates.
 \end{itemize}
 
-See \href{http://conal.net/Pan}{Pan page} for pictures \& papers.
+\pause
+Approximations/prunings compose badly, so postpone.
 
+%% \item Strengthen induction hypothesis
 }
 
 \framet{Memo tries}{
@@ -1118,7 +1197,7 @@ Design methodology for typed, purely functional programming:
 \begin{itemize} \itemsep 1.5ex
 \item \href{http://conal.net/papers/type-class-morphisms/}{\emph{Denotational design with type class morphisms}}
 \item \href{http://conal.net/papers/push-pull-frp/}{\emph{Push-pull functional reactive programming}}
-\item \href{http://conal.net/papers/functional-images/}{\emph{Functional Images}}
+\item \href{http://conal.net/Pan}{Functional images (Pan)} page with pictures \& papers.
 \item \href{http://conal.net/blog/tag/http://conal.net/blog/tag/type-class-morphism/}{Posts on type class morphisms}
 \item \href{https://github.com/conal/talk-2014-bayhac-denotational-design}{This talk}
 %% \item \href{http://conal.net/blog/posts/early-inspirations-and-new-directions-in-functional-reactive-programming/}{\emph{Early inspirations and new directions in functional reactive programming}}
