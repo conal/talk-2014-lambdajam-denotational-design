@@ -2,6 +2,8 @@
 
 A workshop held at [LambdaJam](http://lambdajam.com) on July 23, 2014 in Chicago.
 
+[Slides PDF](http://conal.net/talks/lambdajam-2014.pdf).
+
 ### Abstract
 
 In this talk, I'll share a methodology that I have applied many times over the last 20+ years when designing high-level libraries for functional programming.
