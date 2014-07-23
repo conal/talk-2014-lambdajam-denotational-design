@@ -35,7 +35,6 @@
 \usepackage{color}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
-
 %% \usepackage{wasysym}
 \usepackage{mathabx}
 \usepackage{setspace}
@@ -60,8 +59,8 @@
 \author{\href{http://conal.net}{Conal Elliott}}
 \institute{\href{http://tabula.com/}{Tabula}}
 % Abbreviate date/venue to fit in infolines space
-% \date{July, 2014}
-\date{\emph{Draft of \today}}
+\date{July, 2014}
+% \date{\emph{Draft of \today}}
 
 \setlength{\itemsep}{2ex}
 \setlength{\parskip}{1ex}
@@ -102,9 +101,9 @@ in which one can be absolutely precise.}{Edsger Dijkstra}
 
 \framet{Goals}{
 \begin{itemize}\parskip 4ex
-\item \emph{Abstractions}: precise, elegant, reusable
-\item \emph{Implementations}: correct, efficient, maintainable
-\item \emph{Documentation}: clear, simple, accurate
+\item \emph{Abstractions}: precise, elegant, reusable.
+\item \emph{Implementations}: correct, efficient, maintainable.
+\item \emph{Documentation}: clear, simple, accurate.
 \end{itemize}
 }
 
@@ -132,7 +131,7 @@ Properties:\vspace{-4ex}
 
 ``\ldots gives us a test for whether the notation is genuinely functional or merely masquerading.''
 (\href{http://www.scribd.com/doc/12878059/The-Next-700-Programming-Languages}{\emph{The
-Next 700 Programming Languages}})
+Next 700 Programming Languages}}, 1966)
 
 }
 
@@ -219,18 +218,14 @@ Design methodology for ``genuinely functional'' programming:
 \end{itemize}
 }
 
-\framet{What is an image?}{
-\begin{center}
-\emph{(brainstorming)}
-\end{center}
-}
-
-\framet{Specification goals}{
-
-\begin{itemize}\parskip3ex
-\item Precise
+\framet{What is an image?}{\parskip3ex
+\pause
+Specification goals:
+\pause
+\begin{itemize}\parskip2ex
 \item Adequate
 \item Simple
+\item Precise
 \end{itemize}
 
 \pause
@@ -310,11 +305,9 @@ Make more explicit:
 }
 
 \framet{Generalize and simplify}{\parskip3ex
-\begin{itemize}
-\item
-  What about transforming \emph{regions}?
-\item
-  Other pointwise combinations (lerp, threshold)?
+\begin{itemize}\itemsep2ex
+\item What about transforming \emph{regions}?
+\item Other pointwise combinations (lerp, threshold)?
 \end{itemize}
 
 \pause
@@ -324,7 +317,7 @@ Generalize:
 > type ImageC  = Image Color
 > type Region  = Image Bool
 
-Now |transform|, |monochrome|, |over|, and |crop| get more general.
+Now some operations become more general.
 
 }
 
@@ -401,13 +394,13 @@ My answer: continuous, infinite 2D space.
 
 \framet{Why continuous \& infinite (vs discrete/finite) space?}{
 \begin{itemize}\parskip1.5ex
-\pitem Transformation flexibility with simple \& precise semantics
+\pitem Flexible transformation with simple \& precise semantics
 \pitem Efficiency (adapative)
 \pitem Quality/accuracy
 \pitem Modularity/composability\pause:
   \begin{itemize}\parskip1.2ex
   \item Fewer assumptions, more uses (resolution-independence).
-  \item More info available for extraction.
+  \item More information available for extraction.
   \item Same benefits as pure, non-strict functional programming.\\
         See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
   \end{itemize}
@@ -453,11 +446,12 @@ Interface:
 >   mempty  :: m            -- ``mempty''
 >   (<>)    :: m -> m -> m  -- ``mappend''
 
+\pause
 Laws:
 
-> a <> mempty == a
-> mempty <> b == b
-> a <> (b <> c) == (a <> b) <> c
+> a <> mempty    == a
+> mempty <> b    == b
+> a <> (b <> c)  == (a <> b) <> c
 
 \pause Why do laws |matter|?
 \pause Compositional (modular) reasoning.
@@ -537,19 +531,19 @@ From |Applicative|,
 \framet{Instance semantics}{
 
 \pause
-|Monoid|:
+|Monoid|:\vspace{-2ex}
 
 > mu mempty        == \ p -> mempty
 > mu (top <> bot)  == \ p -> mu top p <> mu bot p
 
 \pause
-|Functor|:
+|Functor|:\vspace{-2ex}
 
 > mu (f <$> im)  == \ p -> f (im p)
 >                == f . im
 
 \pause
-|Applicative|:
+|Applicative|:\vspace{-2ex}
 
 > mu (pure a)       == \ p -> a
 > mu (imf <*> imx)  == \ p -> (imf p) (imx p)
@@ -660,6 +654,63 @@ Strong design principle.
 Class laws necessarily hold, as we'll see.
 }
 
+\setlength{\fboxsep}{-1.7ex}
+
+\framet{Laws for free}{
+
+%% Semantic homomorphisms guarantee class laws. For `Monoid`,
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.4\textwidth}
+
+> meaning mempty    == mempty
+> meaning (a <> b)  == meaning a <> meaning b
+
+\end{minipage}}
+\begin{minipage}[c]{0.07\textwidth}\begin{center}$\Rightarrow$\end{center}\end{minipage}
+\fbox{\begin{minipage}[c]{0.45\textwidth}
+
+> a <> mempty    == a
+> mempty <> b    == b
+> a <> (b <> c)  == (a <> b) <> c
+
+\end{minipage}}
+\end{center}
+\vspace{-1ex}
+where equality is \emph{semantic}.
+\pause
+Proofs:
+\begin{center}
+\fbox{\begin{minipage}[c]{0.3\textwidth}
+
+>     meaning (a <> mempty)
+> ==  meaning a <> meaning mempty
+> ==  meaning a <> mempty
+> ==  meaning a
+
+\end{minipage}}
+\fbox{\begin{minipage}[c]{0.3\textwidth}
+
+>     meaning (mempty <> b)
+> ==  meaning mempty <> meaning b
+> ==  mempty <> meaning b
+> ==  meaning b
+
+\end{minipage}}
+\fbox{\begin{minipage}[c]{0.39\textwidth}
+
+>     meaning (a <> (b <> c))
+> ==  meaning a <> (meaning b <> meaning c)
+> ==  (meaning a <> meaning b) <> meaning c
+> ==  meaning ((a <> b) <> c)
+
+\end{minipage}}
+\end{center}
+
+Works for other classes as well.
+}
+
+
 \framet{Example -- linear transformations}{
 \emph{Assignment:}
 \begin{itemize}
@@ -679,8 +730,6 @@ Class laws necessarily hold, as we'll see.
 \end{itemize}
 
 }
-
-\setlength{\fboxsep}{-1.7ex}
 
 \framet{Interface and denotation}{
 
@@ -1129,6 +1178,7 @@ Suggest a relative time model.
 }
 
 \framet{Why continuous \& infinite (vs discrete/finite) time?}{
+\pause
 \begin{itemize}\parskip0.3ex
 \item Transformation flexibility with simple \& precise semantics
 \item Efficiency (adapative)
@@ -1199,17 +1249,10 @@ Design methodology for typed, purely functional programming:
 \item \href{http://conal.net/papers/push-pull-frp/}{\emph{Push-pull functional reactive programming}}
 \item \href{http://conal.net/Pan}{Functional images (Pan)} page with pictures \& papers.
 \item \href{http://conal.net/blog/tag/http://conal.net/blog/tag/type-class-morphism/}{Posts on type class morphisms}
-\item \href{https://github.com/conal/talk-2014-bayhac-denotational-design}{This talk}
+\item \href{https://github.com/conal/talk-2014-lambdajam-denotational-design}{This talk}
 %% \item \href{http://conal.net/blog/posts/early-inspirations-and-new-directions-in-functional-reactive-programming/}{\emph{Early inspirations and new directions in functional reactive programming}}
 
 \end{itemize}
 }
 
 \end{document}
-
-\pause
-\textbf{Key ideas:}
-\begin{itemize}
-  \item \emph{Interpret} data type as math type with the required operations.
-  \item \emph{Calculate} a correct implementation.
-\end{itemize}
