@@ -3,7 +3,8 @@
 %% %let atwork = True
 
 % Presentation
-\documentclass{beamer}
+% \documentclass{beamer}
+\documentclass[handout]{beamer}
 
 %% % Printed, 2-up
 %% \documentclass[serif,handout]{beamer}
@@ -92,6 +93,7 @@
 \frame{\titlepage}
 
 \framet{Abstraction}{
+\pause
 \large \setstretch{1.5}
 \quote{The purpose of abstraction is not to be vague,\\
 but to create a new semantic level\\
@@ -152,6 +154,7 @@ Design methodology for ``genuinely functional'' programming:
 \item Broad outline:
   \begin{itemize}\parskip 2ex
   \item Example, informally
+  \item \emph{Pretty pictures}
   \item Principles
   \item More examples
   \item Reflection
