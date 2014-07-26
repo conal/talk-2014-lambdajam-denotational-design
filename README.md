@@ -1,4 +1,4 @@
-## Talk: *Denotational Design: from programs to meanings*
+## Talk: *Denotational Design: from meanings to programs*
 
 A workshop held at [LambdaJam](http://lambdajam.com) on July 23, 2014 in Chicago.
 
