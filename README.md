@@ -2,7 +2,11 @@
 
 A workshop held at [LambdaJam](http://lambdajam.com) on July 23, 2014 in Chicago.
 
-[Slides PDF](http://conal.net/talks/lambdajam-2014.pdf).
+See also:
+
+*   [Slides PDF](http://conal.net/talks/lambdajam-2014.pdf).
+*   Video soon-ish, I hope.
+*   [Shorter (1-hour) BayHac version](https://github.com/conal/talk-2014-bayhac-denotational-design) with different examples, with video.
 
 ### Abstract
 
