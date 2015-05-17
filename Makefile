@@ -34,8 +34,9 @@ STASH=conal@conal.net:/home/conal/web/talks
 # STASH=conal@conal-lin:/home/conal/talks
 web: web-token
 
+#web-token: $(TARG).pdf
 web-token: $(TARG).pdf
-	scp $? $(STASH)/
+	scp $? $(STASH)/denotational-design-lambdajam-2014.pdf
 	touch $@
 
 #  $(TARG).lhs HScan.lhs
