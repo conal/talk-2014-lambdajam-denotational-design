@@ -398,7 +398,7 @@ My answer: continuous, infinite 2D space.
 \framet{Why continuous \& infinite (vs discrete/finite) space?}{
 \begin{itemize}\parskip1.5ex
 \pitem Flexible transformation with simple \& precise semantics
-\pitem Efficiency (adapative)
+\pitem Efficiency (adaptive)
 \pitem Quality/accuracy
 \pitem Modularity/composability\pause:
   \begin{itemize}\parskip1.2ex
