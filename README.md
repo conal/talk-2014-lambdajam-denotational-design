@@ -1,11 +1,11 @@
 ## Talk: *Denotational Design: from meanings to programs*
 
-A workshop held at [LambdaJam](http://lambdajam.com) on July 23, 2014 in Chicago.
+A workshop held at [LambdaJam](http://lambdajam.com) 2014 and 2015 in Chicago.
 
 See also:
 
-*   [Slides PDF](http://conal.net/talks/denotational-design-lambdajam-2014.pdf).
-*   Although the talk was recorded, the audio was not good enough to be usable.
+*   [Slides PDF, 2014 version](http://conal.net/talks/denotational-design-lambdajam-2014.pdf).
+    Although the talk was recorded, the audio was not good enough to be usable.
 *   [Shorter (1-hour) BayHac version](https://github.com/conal/talk-2014-bayhac-denotational-design) with different examples, with video.
 
 ### Abstract

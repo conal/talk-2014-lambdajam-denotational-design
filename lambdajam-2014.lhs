@@ -3,8 +3,8 @@
 %% %let atwork = True
 
 % Presentation
-% \documentclass{beamer}
-\documentclass[handout]{beamer}
+\documentclass{beamer}
+% \documentclass[handout]{beamer}
 
 %% % Printed, 2-up
 %% \documentclass[serif,handout]{beamer}
@@ -58,9 +58,9 @@
 \title{Denotational Design}
 \subtitle{from meanings to programs}
 \author{\href{http://conal.net}{Conal Elliott}}
-\institute{\href{http://tabula.com/}{Tabula}}
+% \institute{\href{http://tabula.com/}{Tabula}}
 % Abbreviate date/venue to fit in infolines space
-\date{July, 2014}
+\date{LambdaJam 2015}
 % \date{\emph{Draft of \today}}
 
 \setlength{\itemsep}{2ex}
@@ -1252,7 +1252,7 @@ Design methodology for typed, purely functional programming:
 \item \href{http://conal.net/papers/push-pull-frp/}{\emph{Push-pull functional reactive programming}}
 \item \href{http://conal.net/Pan}{Functional images (Pan)} page with pictures \& papers.
 \item \href{http://conal.net/blog/tag/http://conal.net/blog/tag/type-class-morphism/}{Posts on type class morphisms}
-\item \href{https://github.com/conal/talk-2014-lambdajam-denotational-design}{This talk}
+\item \href{https://github.com/conal/talk-2014-lambdajam-denotational-design}{This workshop}
 %% \item \href{http://conal.net/blog/posts/early-inspirations-and-new-directions-in-functional-reactive-programming/}{\emph{Early inspirations and new directions in functional reactive programming}}
 
 \end{itemize}
