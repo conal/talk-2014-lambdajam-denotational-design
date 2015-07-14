@@ -3,8 +3,8 @@
 %% %let atwork = True
 
 % Presentation
-% \documentclass{beamer}
-\documentclass[handout]{beamer}
+\documentclass{beamer}
+% \documentclass[handout]{beamer}
 
 %% % Printed, 2-up
 %% \documentclass[serif,handout]{beamer}
@@ -164,7 +164,7 @@ Design methodology for ``genuinely functional'' programming:
 \end{itemize}
 }
 
-\framet{Example: image synthesis/manipulation}{
+\framet{Example: image synthesis/manipulation}{
 \begin{itemize}\parskip4ex
 \item How to start?
 \item What is success?
@@ -493,7 +493,7 @@ Do these instances satisfy the |Monoid| laws?
 \framet{|Functor|}{
 
 > class Functor f where
->   (<$>) :: (a -> b) -> (f a -> f b)
+>   fmap :: (a -> b) -> (f a -> f b)
 
 {}
 
@@ -505,7 +505,7 @@ For images?
 \pause
 
 > instance Functor Image where
->   (<$>) = lift1
+>   fmap = lift1
 
 {}
 
@@ -548,8 +548,8 @@ From |Applicative|, where |(<$>) = fmap|:
 \pause
 |Functor|:\vspace{-2ex}
 
-> mu (f <$> im)  == \ p -> f (im p)
->                == f . im
+> mu (fmap f im)  == \ p -> f (im p)
+>                 == f . im
 
 \pause
 |Applicative|:\vspace{-2ex}
@@ -568,6 +568,8 @@ From |Applicative|, where |(<$>) = fmap|:
 > class Functor f => Comonad f where
 >   coreturn  :: f a -> a
 >   cojoin    :: f a -> f (f a)
+
+|Comonad| gives us neighborhood operations.
 
 }
 
@@ -604,19 +606,19 @@ So |mu| \emph{distributes} over monoid operations\pause, i.e., a monoid homomorp
 Functor specification:
 \vspace{-1.5ex}
 
-> mu (f <$> im) == f . mu im
+> mu (fmap f im) == f . mu im
 
 \pause
 Instance for the semantic model:
 \vspace{-1.5ex}
 
 > instance Functor ((->) u) where
->  f <$> h = f . h
+>  fmap f h = f . h
 
 Refactoring,
 \vspace{-1.5ex}
 
-> mu (f <$> im) == f <$> mu im
+> mu (fmap f im) == fmap f (mu im)
 
 So |mu| is a \emph{functor} homomorphism.
 }
@@ -719,8 +721,319 @@ Proofs:
 Works for other classes as well.
 }
 
+
+%if True
+\framet{Example: functional reactive programming}{
 
-\framet{Example -- linear transformations}{
+See previous talks:
+
+\begin{itemize}\itemsep2ex
+\item \href{https://github.com/conal/talk-2015-essence-and-origins-of-frp/tree/lambdajam-2015}{\emph{The essence and origins of FRP}}
+\item \emph{A more elegant specification for FRP}
+\end{itemize}
+}
+
+%else
+
+\framet{Example: functional reactive programming}{
+
+\pause
+
+Two essential properties:
+\begin{itemize}
+  \item \emph{Continuous} time!
+  (Natural \& composable.)
+\item Denotational design.
+  (Elegant \& rigorous.)
+\end{itemize}
+{\parskip 3ex
+
+\pause
+
+Deterministic, continuous ``concurrency''.
+
+More aptly, \emph{``Denotative continuous-time programming''} (DCTP).
+
+Warning: many modern ``FRP'' systems have neither property.
+}
+}
+
+\framet{Denotational design}{
+
+Central type:
+
+> type Behavior a
+
+Model:
+
+> meaning :: Behavior a -> (T -> a)
+
+\pause
+
+Suggests API and semantics (via morphisms).
+
+What standard algebraic abstractions does the model inhabit?
+
+\pause
+|Monoid|, |Functor|, |Applicative|, |Monad|, |Comonad|.
+
+}
+
+\framet{Functor}{
+
+> instance Functor ((->) t) where
+>   fmap f h = f . h
+
+Morphism:
+
+>     meaning (fmap f b)
+> ==  fmap f (meaning b)
+> SPACE
+> ==  f . meaning b
+
+}
+
+\framet{Applicative}{
+
+> instance Applicative ((->) t) where
+>   pure a   = \ t -> a
+>   g <*> h  = \ t -> (g t) (h t)
+
+Morphisms:
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+>     meaning (pure a)
+> ==  pure a
+> SPACE
+> ==  \ t -> a
+
+\end{minipage}}
+\hspace{0.02\textwidth}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+>     meaning (fs <*> xs)
+> ==  meaning fs <*> meaning xs
+> SPACE
+> ==  \ t -> (meaning' fs t) (meaning' xs t)
+
+\end{minipage}}
+\end{center}
+
+Corresponds exactly to the original FRP denotation.
+
+}
+
+\framet{Monad}{
+
+> instance Monad ((->) t) where
+>   join ff = \ t -> ff t t
+
+Morphism:
+\begin{center}
+\fbox{\begin{minipage}[c]{0.48\textwidth}
+
+>     meaning (join bb)
+> ==  join (fmap meaning (meaning bb))
+> SPACE
+> ==  join (meaning . meaning bb)
+> ==  \ t -> (meaning . meaning bb) t t
+> ==  \ t -> meaning (meaning bb t) t
+
+\end{minipage}}
+\end{center}
+
+}
+
+\framet{Comonad}{
+
+> class Comonad w where
+>   coreturn :: w a -> a
+>   cojoin   :: w a -> w (w a)
+
+Functions:
+
+> instance Monoid t => Comonad ((->) t) where
+>   coreturn :: (t -> a) -> a
+>   coreturn f = f mempty
+>   cojoin f = \ t t' -> f (t <> t')
+
+Suggest a relative time model.
+
+}
+
+\framet{Why continuous \& infinite (vs discrete/finite) time?}{
+\pause
+\begin{itemize}\parskip0.3ex
+\item Transformation flexibility with simple \& precise semantics
+\item Efficiency (adapative)
+\item Quality/accuracy
+\item Modularity/composability:
+  \begin{itemize}
+  \item Fewer assumptions, more uses (resolution-independence).
+  \item More info available for extraction.
+  \item Same benefits as pure, non-strict functional programming.\\
+        See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
+  \end{itemize}
+\pitem Integration and differentiation: natural, accurate, efficient.
+\pitem Reconcile differing input sampling rates.
+\end{itemize}
+
+\pause
+% Approximations/prunings compose badly, so postpone.
+{\color{blue}
+\fbox{\normalcolor\emph{Principle:} Approximations/prunings compose badly, so postpone.}
+}
+
+
+%% \item Strengthen induction hypothesis
+}
+%endif
+
+\framet{Example: uniform pairs}{
+
+Type:
+
+> data Pair a = a :# a
+
+~
+
+API: |Monoid|, |Functor|, |Applicative|, |Monad|, |Foldable|, |Traversable|.
+
+\out{
+\begin{itemize}
+\item How to implement the methods? \pause (Answer: ``Correctly''.)
+\item More fundamentally, what should the methods mean?
+\end{itemize}
+}
+
+\pause\vspace{6ex}
+
+Specification follows from simple \& precise denotation.
+
+% What is it?
+}
+
+\framet{Uniform pairs --- denotation}{
+
+\pause
+|Pair| is an \emph{indexable} container.
+What's the index type?
+\pause
+
+> type P a = Bool -> a
+
+> meaning :: Pair a -> P a
+
+\pause\vspace{-8ex}
+
+> meaning (u :# v) False = u
+> meaning (u :# v) True  = v
+
+Equivalently,
+
+> meaning (u :# v) = \ b -> if b then v else u
+
+API specification? \pause Homomorphisms, as usual!
+}
+
+\framet{Uniform pairs --- monoid}{
+
+Monoid homomorphism:
+
+> meaning mempty    == mempty
+> meaning (u <> v)  == meaning u <> meaning v
+
+In this case,
+
+> instance Monoid m => Monoid (z -> m) where
+>   mempty  = \ z -> mempty
+>   f <> g  = \ z -> f z <> g z
+
+so
+
+> meaning mempty    == \ z -> mempty
+> meaning (u <> v)  == \ z -> meaning u z <> meaning v z
+
+Solve for |mempty| and |(<>)| on the left.
+\pause
+Hint: find |meaningInv|.
+
+}
+
+\framet{Uniform pairs --- other classes}{
+Exercise: apply the same principle for
+\begin{itemize}
+\item |Functor|
+\item |Applicative|
+\item |Monad|
+\item |Foldable|
+\item |Traversable|
+\end{itemize}
+}
+
+\framet{Example: streams}{
+
+> data Stream a = Cons a (Stream a)
+
+API: same classes as with |Pair|.
+
+Denotation?
+\pause
+Hint: |Stream| is also an indexable type.
+
+\pause
+
+> data S a = Nat -> a
+> 
+> data Nat = Zero | Succ Nat
+
+Interpret |Stream| as |S|:
+
+> mu :: Stream a -> S a
+> mu (Cons a _ )  Zero      = a
+> mu (Cons _ as)  (Succ n)  = mu as n
+
+}
+
+
+\framet{Memo tries}{
+
+Generalizes |Pair| and |Stream|:
+
+> type a :->: b
+>
+> meaning :: (a :->: b) -> (a -> b)
+
+API: classes as above, plus |Category|.
+
+% This time, |meaning| has an inverse.
+
+~
+
+Exploit inverses to calculate instances, e.g.,
+
+\begin{center}
+\fbox{\begin{minipage}[c]{0.4\textwidth}
+
+>      meaning id == id
+> <==  id == meaningInv id
+
+\end{minipage}}
+\hspace{0.02\textwidth}
+\fbox{\begin{minipage}[c]{0.5\textwidth}
+
+>      meaning (g . f) == meaning g . meaning f
+> <==  g . f == meaningInv (meaning g . meaning f)
+
+\end{minipage}}
+\end{center}
+
+Then simplify/optimize.
+}
+
+\framet{Example: linear transformations}{
 \emph{Assignment:}
 \begin{itemize}
 \item Represent linear transformations
@@ -1056,192 +1369,6 @@ matrices}}.
 > meaning (f :&&  g)  = \ a -> (f a, g a)
 > meaning (f :||  g)  = \ (a,b) -> f a + g b
 
-}
-
-\framet{Functional reactive programming}{
-
-\pause
-
-Two essential properties:
-\begin{itemize}
-  \item \emph{Continuous} time!
-  (Natural \& composable.)
-\item Denotational design.
-  (Elegant \& rigorous.)
-\end{itemize}
-{\parskip 3ex
-
-\pause
-
-Deterministic, continuous ``concurrency''.
-
-More aptly, \emph{``Denotative continuous-time programming''} (DCTP).
-
-Warning: many modern ``FRP'' systems have neither property.
-}
-}
-
-\framet{Denotational design}{
-
-Central type:
-
-> type Behavior a
-
-Model:
-
-> meaning :: Behavior a -> (T -> a)
-
-\pause
-
-Suggests API and semantics (via morphisms).
-
-What standard algebraic abstractions does the model inhabit?
-
-\pause
-|Monoid|, |Functor|, |Applicative|, |Monad|, |Comonad|.
-
-}
-
-\framet{Functor}{
-
-> instance Functor ((->) t) where
->   f <$> h = f . h
-
-Morphism:
-
->     meaning (f <$> b)
-> ==  f <$> meaning b
-> SPACE
-> ==  f . meaning b
-
-}
-
-\framet{Applicative}{
-
-> instance Applicative ((->) t) where
->   pure a   = \ t -> a
->   g <*> h  = \ t -> (g t) (h t)
-
-Morphisms:
-
-\begin{center}
-\fbox{\begin{minipage}[c]{0.48\textwidth}
-
->     meaning (pure a)
-> ==  pure a
-> SPACE
-> ==  \ t -> a
-
-\end{minipage}}
-\hspace{0.02\textwidth}
-\fbox{\begin{minipage}[c]{0.48\textwidth}
-
->     meaning (fs <*> xs)
-> ==  meaning fs <*> meaning xs
-> SPACE
-> ==  \ t -> (meaning' fs t) (meaning' xs t)
-
-\end{minipage}}
-\end{center}
-
-Corresponds exactly to the original FRP denotation.
-
-}
-
-\framet{Monad}{
-
-> instance Monad ((->) t) where
->   join ff = \ t -> ff t t
-
-Morphism:
-\begin{center}
-\fbox{\begin{minipage}[c]{0.48\textwidth}
-
->     meaning (join bb)
-> ==  join (meaning <$> meaning bb)
-> SPACE
-> ==  join (meaning . meaning bb)
-> ==  \ t -> (meaning . meaning bb) t t
-> ==  \ t -> meaning (meaning bb t) t
-
-\end{minipage}}
-\end{center}
-
-}
-
-\framet{Comonad}{
-
-> class Comonad w where
->   coreturn :: w a -> a
->   cojoin   :: w a -> w (w a)
-
-Functions:
-
-> instance Monoid t => Comonad ((->) t) where
->   coreturn :: (t -> a) -> a
->   coreturn f = f mempty
->   cojoin f = \ t t' -> f (t <> t')
-
-Suggest a relative time model.
-
-}
-
-
-\framet{Why continuous \& infinite (vs discrete/finite) time?}{
-\pause
-\begin{itemize}\parskip0.3ex
-\item Transformation flexibility with simple \& precise semantics
-\item Efficiency (adapative)
-\item Quality/accuracy
-\item Modularity/composability:
-  \begin{itemize}
-  \item Fewer assumptions, more uses (resolution-independence).
-  \item More info available for extraction.
-  \item Same benefits as pure, non-strict functional programming.\\
-        See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
-  \end{itemize}
-\pitem Integration and differentiation: natural, accurate, efficient.
-\pitem Reconcile differing input sampling rates.
-\end{itemize}
-
-\pause
-% Approximations/prunings compose badly, so postpone.
-{\color{blue}
-\fbox{\normalcolor\emph{Principle:} Approximations/prunings compose badly, so postpone.}
-}
-
-
-%% \item Strengthen induction hypothesis
-}
-
-\framet{Memo tries}{
-
-> type a :->: b
->
-> meaning :: (a :->: b) -> (a -> b)
-
-This time, |meaning| has an inverse.
-
-~
-
-Exploit inverses to calculate instances.
-Example:
-
-\begin{center}
-\fbox{\begin{minipage}[c]{0.4\textwidth}
-
->      meaning id == id
-> <==  id == meaningInv id
-
-\end{minipage}}
-\hspace{0.02\textwidth}
-\fbox{\begin{minipage}[c]{0.5\textwidth}
-
->      meaning (g . f) == meaning g . meaning f
-> <==  g . f == meaningInv (meaning g . meaning f)
-
-\end{minipage}}
-\end{center}
 }
 
 \framet{Denotational design}{ % \parskip 2ex
