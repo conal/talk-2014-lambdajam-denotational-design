@@ -3,8 +3,8 @@
 %% %let atwork = True
 
 % Presentation
-\documentclass{beamer}
-% \documentclass[handout]{beamer}
+% \documentclass{beamer}
+\documentclass[handout]{beamer}
 
 %% % Printed, 2-up
 %% \documentclass[serif,handout]{beamer}
@@ -396,23 +396,29 @@ My answer: continuous, infinite 2D space.
 }
 
 \framet{Why continuous \& infinite (vs discrete/finite) space?}{
-\begin{itemize}\parskip1.5ex
-\pitem Flexible transformation with simple \& precise semantics
-\pitem Efficiency (adaptive)
-\pitem Quality/accuracy
-\pitem Modularity/composability\pause:
-  \begin{itemize}\parskip1.2ex
+\pause
+% Same benefits as for pure, non-strict functional programming:
+\begin{itemize}\itemsep0.3ex
+\item Transformation flexibility with simple \& precise semantics.
+\item Modularity/reusability/composability:
+  \begin{itemize}
   \item Fewer assumptions, more uses (resolution-independence).
-  \item More information available for extraction.
+  \item More info available for extraction.
   \item Same benefits as pure, non-strict functional programming.\\
         See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
   \end{itemize}
-\end{itemize}
-
+\item Integration and differentiation: natural, accurate, efficient.
+% \item Simplicity: eliminate non-essential details.
 \pause
-Approximations/prunings \emph{compose} badly, so postpone.
-
-%% \item Strengthen induction hypothesis
+\item Quality/accuracy.
+\item Efficiency (adapative).
+\item Reconcile differing input sampling rates.
+\end{itemize}
+\pause
+% \fbox{\emph{Principle:} Approximations/prunings compose badly, so postpone.}
+{\color{blue}
+\fbox{\normalcolor\emph{Principle:} Approximations/prunings compose badly, so postpone.}
+}
 }
 
 \framet{Examples}{
@@ -521,7 +527,7 @@ For images?
 >   pure   = lift0
 >   (<*>)  = lift2 ($)
 
-From |Applicative|,
+From |Applicative|, where |(<$>) = fmap|:
 
 > liftA2 f p q    = f <$> p <*> q
 > liftA3 f p q r  = f <$> p <*> q <*> r
@@ -1180,6 +1186,7 @@ Suggest a relative time model.
 
 }
 
+
 \framet{Why continuous \& infinite (vs discrete/finite) time?}{
 \pause
 \begin{itemize}\parskip0.3ex
@@ -1198,7 +1205,11 @@ Suggest a relative time model.
 \end{itemize}
 
 \pause
-Approximations/prunings compose badly, so postpone.
+% Approximations/prunings compose badly, so postpone.
+{\color{blue}
+\fbox{\normalcolor\emph{Principle:} Approximations/prunings compose badly, so postpone.}
+}
+
 
 %% \item Strengthen induction hypothesis
 }

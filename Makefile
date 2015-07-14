@@ -1,4 +1,5 @@
-TARG = lambdajam-2014
+# TARG = lambdajam-2014
+TARG = denotational-design
 
 .PRECIOUS: %.tex %.pdf %.web
 
@@ -8,8 +9,6 @@ see: $(TARG).see
 
 %.pdf: %.tex Makefile
 	pdflatex $*.tex
-
-# --poly is default for lhs2TeX
 
 %.tex: %.lhs macros.tex mine.fmt Makefile
 	lhs2TeX -o $*.tex $*.lhs
@@ -22,21 +21,11 @@ showpdf = open -a Skim.app
 clean:
 	rm $(TARG).{tex,pdf,aux,nav,snm,ptb}
 
-# web: $(TARG).web
-
-# %.web: %.pdf
-# 	scp $< conal@conal.net:/home/conal/web/talks
-# 	touch $@
-
 web: web-token
 
 STASH=conal@conal.net:/home/conal/web/talks
-# STASH=conal@conal-lin:/home/conal/talks
 web: web-token
 
-#web-token: $(TARG).pdf
 web-token: $(TARG).pdf
-	scp $? $(STASH)/denotational-design-lambdajam-2014.pdf
+	scp $? $(STASH)/denotational-design-lambdajam-2015.pdf
 	touch $@
-
-#  $(TARG).lhs HScan.lhs
