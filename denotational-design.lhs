@@ -1039,6 +1039,25 @@ Exploit inverses to calculate instances, e.g.,
 Then simplify/optimize.
 }
 
+\framet{Example: lists with a bonus}{
+
+> data ListX a b = Done b | Cons a (ListX a b)
+
+Denotation:\pause
+
+> mu :: ListX a b -> ([a],b)
+> mu (Done b)      = ([],b)
+> mu (Cons a asb)  = (a:as,b) where (as,b) = mu asb
+
+Exercise: instances, including
+
+> instance Monad (ListX a) where ...
+
+\pause
+Then generalize from lists to arbitrary monoid.
+
+}
+
 \framet{Example: linear transformations}{
 \emph{Assignment:}
 \begin{itemize}
