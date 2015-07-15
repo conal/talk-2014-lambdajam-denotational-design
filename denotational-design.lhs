@@ -397,15 +397,15 @@ My answer: continuous, infinite 2D space.
 
 \framet{Why continuous \& infinite (vs discrete/finite) space?}{
 \pause
-% Same benefits as for pure, non-strict functional programming:
+Same benefits as for time (FRP):
+%\\ \hspace{6ex} \ldots and for pure, non-strict functional programming.
+\pause
 \begin{itemize}\itemsep0.3ex
 \item Transformation flexibility with simple \& precise semantics.
 \item Modularity/reusability/composability:
   \begin{itemize}
   \item Fewer assumptions, more uses (resolution-independence).
   \item More info available for extraction.
-  \item Same benefits as pure, non-strict functional programming.\\
-        See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why Functional Programming Matters}}.
   \end{itemize}
 \item Integration and differentiation: natural, accurate, efficient.
 % \item Simplicity: eliminate non-essential details.
@@ -416,9 +416,12 @@ My answer: continuous, infinite 2D space.
 \end{itemize}
 \pause
 % \fbox{\emph{Principle:} Approximations/prunings compose badly, so postpone.}
+\vspace{1ex}
 {\color{blue}
 \fbox{\normalcolor\emph{Principle:} Approximations/prunings compose badly, so postpone.}
 }
+
+See \href{http://www.cse.chalmers.se/~rjmh/Papers/whyfp.html}{\emph{Why~Functional~Programming~Matters}}.
 }
 
 \framet{Examples}{
@@ -585,9 +588,9 @@ Image monoid specification:
 Instance for the semantic model:
 \vspace{-1.5ex}
 
-> instance Monoid v => Monoid (u -> v) where
->   mempty  = \ u -> mempty
->   f <> g  = \ u -> f u <> g u
+> instance Monoid m => Monoid (z -> m) where
+>   mempty  = \ z -> mempty
+>   f <> g  = \ z -> f z <> g z
 
 \pause
 Refactoring,
@@ -931,9 +934,12 @@ What's the index type?
 > meaning (u :# v) False = u
 > meaning (u :# v) True  = v
 
+\out{
 Equivalently,
 
 > meaning (u :# v) = \ b -> if b then v else u
+
+}
 
 API specification? \pause Homomorphisms, as usual!
 }
@@ -956,7 +962,7 @@ so
 > meaning mempty    == \ z -> mempty
 > meaning (u <> v)  == \ z -> meaning u z <> meaning v z
 
-Solve for |mempty| and |(<>)| on the left.
+Implementation: solve for |mempty| and |(<>)| on the left.
 \pause
 Hint: find |meaningInv|.
 
@@ -1010,7 +1016,7 @@ API: classes as above, plus |Category|.
 
 % This time, |meaning| has an inverse.
 
-~
+\vspace{2ex}
 
 Exploit inverses to calculate instances, e.g.,
 
@@ -1037,7 +1043,7 @@ Then simplify/optimize.
 \emph{Assignment:}
 \begin{itemize}
 \item Represent linear transformations
-\item Implement identity and composition
+\item Scalar, non-scalar domain \& range, identity and composition
 \end{itemize}
 
 \pause
@@ -1390,7 +1396,10 @@ Design methodology for typed, purely functional programming:
 \item \href{http://conal.net/papers/push-pull-frp/}{\emph{Push-pull functional reactive programming}}
 \item \href{http://conal.net/Pan}{Functional images (Pan)} page with pictures \& papers.
 \item \href{http://conal.net/blog/tag/http://conal.net/blog/tag/type-class-morphism/}{Posts on type class morphisms}
+\item \href{http://conal.net/blog/posts/reimagining-matrices}{\emph{Reimagining
+matrices}}
 \item \href{https://github.com/conal/talk-2014-lambdajam-denotational-design}{This workshop}
+
 %% \item \href{http://conal.net/blog/posts/early-inspirations-and-new-directions-in-functional-reactive-programming/}{\emph{Early inspirations and new directions in functional reactive programming}}
 
 \end{itemize}
