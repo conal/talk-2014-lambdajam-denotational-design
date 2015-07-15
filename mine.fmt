@@ -59,8 +59,8 @@
 
 %format Lin = "(":-*")"
 
-%format :&& = "\mathbin{:\!"&&&"}"
-%format :|| = "\mathbin{:\!"|||"}"
+%format :&& = "\mathbin{:\!\!"&&&"}"
+%format :|| = "\mathbin{:\!\!"|||"}"
 
 %format *** = "\mathbin{\times}"
 %format &&& = "\mathbin{\smalltriangleup}"
@@ -85,12 +85,14 @@
 %format :->: = "\twoheadrightarrow"
 %format <== = "\Leftarrow"
 
-%format liftA2 = "\Varid{liftA_2}"
-%format liftA3 = "\Varid{liftA_3}"
-%format liftA4 = "\Varid{liftA_4}"
-
+%format liftA2 = "\Varid{liftA\!_2}"
+%format liftA3 = "\Varid{liftA\!_3}"
+%format liftA4 = "\Varid{liftA\!_4}"
+{
 %format lift0 = "\Varid{lift_0}"
 %format lift1 = "\Varid{lift_1}"
 %format lift2 = "\Varid{lift_2}"
 %format lift3 = "\Varid{lift_3}"
 %format lift4 = "\Varid{lift_4}"
+
+%format :# = "\mathbin{:\!\!\#}"
