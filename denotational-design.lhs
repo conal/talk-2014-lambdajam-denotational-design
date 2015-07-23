@@ -731,8 +731,8 @@ Works for other classes as well.
 See previous talks:
 
 \begin{itemize}\itemsep2ex
-\item \href{https://github.com/conal/talk-2015-essence-and-origins-of-frp/tree/lambdajam-2015}{\emph{The essence and origins of FRP}}
-\item \emph{A more elegant specification for FRP}
+\item \href{https://github.com/conal/talk-2015-essence-and-origins-of-frp/}{\emph{The essence and origins of FRP}}
+\item \href{https://github.com/conal/talk-2015-more-elegant-frp}{\emph{A more elegant specification for FRP}}
 \end{itemize}
 }
 
