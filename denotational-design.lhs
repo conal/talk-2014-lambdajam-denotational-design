@@ -3,8 +3,8 @@
 %% %let atwork = True
 
 % Presentation
-\documentclass{beamer}
-% \documentclass[handout]{beamer}
+% \documentclass{beamer}
+\documentclass[handout]{beamer}
 
 %% % Printed, 2-up
 %% \documentclass[serif,handout]{beamer}

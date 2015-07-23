@@ -26,6 +26,7 @@ web: web-token
 STASH=conal@conal.net:/home/conal/web/talks
 web: web-token
 
+# BUILDS=-with-builds
 web-token: $(TARG).pdf
-	scp $? $(STASH)/denotational-design-lambdajam-2015.pdf
+	scp $? $(STASH)/denotational-design-lambdajam-2015$(BUILDS).pdf
 	touch $@
