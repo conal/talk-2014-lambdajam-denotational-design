@@ -5,9 +5,8 @@ A workshop held at [LambdaJam](http://lambdajam.com) 2014 and 2015 in Chicago.
 See also:
 
 *   [Shorter (1-hour) BayHac version](https://github.com/conal/talk-2014-bayhac-denotational-design) with different examples, with video.
-*   [Slides PDF, 2014 version](http://conal.net/talks/denotational-design-lambdajam-2014.pdf).
-    Although the talk was recorded, the audio was not good enough to be usable.
-*   [Slides PDF, 2015 version](http://conal.net/talks/denotational-design-lambdajam-2015.pdf).
+*   Slides, 2014 (PDF): [without builds](http://conal.net/talks/denotational-design-lambdajam-2014.pdf), or [with](http://conal.net/talks/denotational-design-lambdajam-2014-with-builds.pdf).
+*   Slides, 2015 (PDF): [without builds](http://conal.net/talks/denotational-design-lambdajam-2015.pdf), or [with](http://conal.net/talks/denotational-design-lambdajam-2015-with-builds.pdf).
 
 ### Abstract
 
