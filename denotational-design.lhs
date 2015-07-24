@@ -951,12 +951,14 @@ Monoid homomorphism:
 > meaning mempty    == mempty
 > meaning (u <> v)  == meaning u <> meaning v
 
+\pause
 In this case,
 
 > instance Monoid m => Monoid (z -> m) where
 >   mempty  = \ z -> mempty
 >   f <> g  = \ z -> f z <> g z
 
+\pause
 so
 
 > meaning mempty    == \ z -> mempty
