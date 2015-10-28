@@ -4,11 +4,11 @@ A workshop held at [LambdaJam](http://lambdajam.com) 2014 and 2015 in Chicago.
 
 See also:
 
-*   Paper: [*Denotational design with type class morphisms*](http://conal.net/papers/type-class-morphisms/)
-*   [Shorter (1-hour) BayHac version](https://github.com/conal/talk-2014-bayhac-denotational-design) with different examples, with video.
-*   Slides, 2014 (PDF): [without builds](http://conal.net/talks/denotational-design-lambdajam-2014.pdf), or [with](http://conal.net/talks/denotational-design-lambdajam-2014-with-builds.pdf).
 *   Slides, 2015 (PDF): [without builds](http://conal.net/talks/denotational-design-lambdajam-2015.pdf), or [with](http://conal.net/talks/denotational-design-lambdajam-2015-with-builds.pdf).
-    Video expected in August 2015.
+*   [Video, 2015](https://www.youtube.com/watch?v=bmKYiUOEo2A) (140 minutes).
+*   Paper: [*Denotational design with type class morphisms*](http://conal.net/papers/type-class-morphisms/).
+*   Slides, 2014 (PDF): [without builds](http://conal.net/talks/denotational-design-lambdajam-2014.pdf), or [with](http://conal.net/talks/denotational-design-lambdajam-2014-with-builds.pdf).
+*   [Shorter (1-hour) BayHac version](https://github.com/conal/talk-2014-bayhac-denotational-design) with different examples, with video..
 
 ### Abstract
 
