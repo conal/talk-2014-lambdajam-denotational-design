@@ -551,14 +551,14 @@ From |Applicative|, where |(<$>) = fmap|:
 \pause
 |Functor|:\vspace{-2ex}
 
-> mu (fmap f im)  == \ p -> f (im p)
->                 == f . im
+> mu (fmap f im)  == \ p -> f (mu im p)
+>                 == f . mu im
 
 \pause
 |Applicative|:\vspace{-2ex}
 
 > mu (pure a)       == \ p -> a
-> mu (imf <*> imx)  == \ p -> (imf p) (imx p)
+> mu (imf <*> imx)  == \ p -> (mu imf p) (mu imx p)
 
 }
 
