@@ -11,8 +11,9 @@ See also:
     *   [The essence and origins of Functional Reactive Programming](https://github.com/conal/talk-2015-essence-and-origins-of-frp)
     *   [A more elegant specification for FRP](https://github.com/conal/talk-2015-more-elegant-frp)
 *   Older versions:
-    *   Slides, 2014 (PDF): [without builds](http://conal.net/talks/denotational-design-lambdajam-2014.pdf), or [with](http://conal.net/talks/denotational-design-lambdajam-2014-with-builds.pdf).
-    *   [Shorter (1-hour) BayHac version](https://github.com/conal/talk-2014-bayhac-denotational-design) with different examples, with video.
+    *   2014 slides (PDF): [without builds](http://conal.net/talks/denotational-design-lambdajam-2014.pdf), or [with](http://conal.net/talks/denotational-design-lambdajam-2014-with-builds.pdf).
+    *   [Shorter (1-hour) BayHac version](https://github.com/conal/talk-2014-bayhac-denotational-design) with different examples.
+        Includes notes on [why continuous time matters](https://github.com/conal/talk-2014-bayhac-denotational-design#why-continuous-time-matters).
 
 ### Abstract
 
