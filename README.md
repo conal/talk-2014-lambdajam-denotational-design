@@ -5,7 +5,7 @@ A workshop held at [LambdaJam](http://lambdajam.com) 2014 and 2015 in Chicago.
 See also:
 
 *   Slides, 2015 (PDF): [without builds](http://conal.net/talks/denotational-design-lambdajam-2015.pdf), or [with](http://conal.net/talks/denotational-design-lambdajam-2015-with-builds.pdf).
-*   [Video, 2015](https://www.youtube.com/watch?v=bmKYiUOEo2A) (140 minutes).
+*   [Video, 2015](https://www.youtube.com/watch?v=rlyqoYoUumc) (140 minutes).
 *   Paper: [*Denotational design with type class morphisms*](http://conal.net/papers/type-class-morphisms/).
 *   Related talks, also from Lambda Jam 2015:
     *   [The essence and origins of Functional Reactive Programming](https://github.com/conal/talk-2015-essence-and-origins-of-frp)
